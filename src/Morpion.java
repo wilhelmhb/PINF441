@@ -4,32 +4,26 @@ import java.awt.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * class representing the whole game
+ * @author Guillaume
+ */
 public class Morpion extends JPanel {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    /*
-     * definition of the dimensions of each cell
-     */
+    /* definition of the dimensions of each cell */
     int cell_width;
     int cell_height;
-    /*
-     * how many cells do we have ?
-     */
+    /* how many cells do we have ? */
     int nb_columns;
     int nb_rows;
-    /*
-     * how many cell in a range do we have to possess in order to win ?
-     */
+    /* how many cell in a range do we have to possess in order to win ? */
     int aim;
-    /* 
-     * what colors will we use ?
-     */
+    /* what colors will we use ? */
     Color unknown;
     Color checked;
     Color unchecked;
-    /*
-     * values of the grid
-     */
+    /* values of the grid */
     Boolean[][] a;//a[column][row]
     Cell[][] c;
 
@@ -42,7 +36,7 @@ public class Morpion extends JPanel {
     }
 
     /**
-     * generates the graphic aspect of our picross
+     * generates the graphic aspect of our Morpion
      */
     public void generateGraphics() {
         /* we use a grid layout */
@@ -53,7 +47,6 @@ public class Morpion extends JPanel {
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
 
-        /* sets the inside of the picross */
         for(int k = 0 ; k < nb_columns ; k++){
             for(int i = 0 ; i < nb_rows ; i++){
                 Cell c = new Cell(cell_width, cell_height, unknown, null);
@@ -72,10 +65,10 @@ public class Morpion extends JPanel {
     }
 
     /**
-     * instanciate a Morpion given the size and aim
+     *   instanciate a Morpion given the size, aim and dimensions
      * @param height
      * @param width
-     * @param aim
+     * @param aim : number of cells in a range to reach in order to win
      */
     public Morpion(int height, int width, int aim) {
         /* Instantiate the constants in the picross */
@@ -93,12 +86,15 @@ public class Morpion extends JPanel {
         this.aim = aim;
         generateGraphics();
 
-        LOGGER.info("Picross instancié");
+        LOGGER.info("Morpion instancié");
         //this.setPreferredSize(new Dimension(cell_width*(nb_columns + nb_clues_rows),cell_height*(nb_rows)));
     }
 
     /**
-     *
+     * place a piece for player player on cell (column, row)
+     * @param player : true for player one, false for player 2
+     * @param column
+     * @param row
      */
     public void move(boolean player, int column, int row) {
         a[column][row] = player;
@@ -111,7 +107,11 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * verify that the cell (column, row) doesn't contain a piece yet, then place a piece on it
+     * @param player
+     * @param column
+     * @param row
+     * @return true if move is allowed
      */
     public boolean allowedMove(boolean player, int column, int row) {
         if(this.a[column][row] != null) {
@@ -122,9 +122,11 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * choose randomly an empty cell in the column column
+     * @param column
+     * @return the index of an empty cell in column column
      */
-    public int chooseAuthorisedRow(int column) {
+    public int chooseAllowedRow(int column) {
         int row = (int) Math.floor(Math.random() * this.nb_rows);
         while(a[column][row] != null) {
             row = (int) Math.floor(Math.random() * this.nb_rows);
@@ -133,7 +135,9 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * test if the column column is full
+     * @param column
+     * @return true if not piece can be place on column column
      */
     public boolean isColumnFull(int column) {
         for(int k = 0; k < this.nb_rows ; k++) {
@@ -146,7 +150,8 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * choose randomly a column where you can put a piece somewhere
+     * @return the index of a not full column
      */
     public int chooseNotFullColumn() {
         int column = (int) Math.floor(Math.random() * this.nb_columns);
@@ -157,7 +162,8 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * test if a piece can be added somewhere in the game
+     * @return true if no piece can be placed any more
      */
     public boolean isMorpionFull() {
         for(int i = 0 ; i < this.nb_columns ; i++) {
@@ -169,11 +175,13 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * play once randomly for the player player
+     * @param player
+     * @return true if player has won thanks to this move
      */
     public boolean playOnce(boolean player) {
         int column = chooseNotFullColumn();
-        int row = chooseAuthorisedRow(column);
+        int row = chooseAllowedRow(column);
         LOGGER.info("selected column : "+ column + " and selected row : "+ row);
         if(!allowedMove(player, column, row)) {
             LOGGER.severe("Tes algos sont pourraves, vieux !");
@@ -182,7 +190,11 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * test if player won the game thanks to a row
+     * @param player
+     * @param column
+     * @param row
+     * @return true if thanks to a move in cell (column, row), player won thanks to a row
      */
     public boolean isWonHorizontally(boolean player, int column, int row) {
         int count = 1;
@@ -200,7 +212,11 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * test if player won the game thanks to a column
+     * @param player
+     * @param column
+     * @param row
+     * @return true if thanks to a move in cell (column, row), player won thanks to a column
      */
     public boolean isWonVertically(boolean player, int column, int row) {
         int count = 1;
@@ -218,7 +234,11 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * test if player won the game thanks to the first bisector
+     * @param player
+     * @param column
+     * @param row
+     * @return true if thanks to a move in cell (column, row), player won thanks to the first bisector
      */
     public boolean isWonOnFirstDiag(boolean player, int column, int row) {
         int count = 1;
@@ -240,7 +260,11 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * test if player won the game thanks to a second bisector
+     * @param player
+     * @param column
+     * @param row
+     * @return true if thanks to a move in cell (column, row), player won thanks to the second bisector
      */
     public boolean isWonOnSecondDiag(boolean player, int column, int row) {
         int count = 1;
@@ -262,14 +286,18 @@ public class Morpion extends JPanel {
     }
 
     /**
-     *
+     * test if player won
+     * @param player
+     * @param column
+     * @param row
+     * @return true if player won thanks to a piece in cell (column, row)
      */
     public boolean isWon(boolean player, int column, int row) {
         return isWonHorizontally(player, column, row)||isWonVertically(player, column, row)||isWonOnFirstDiag(player, column, row)||isWonOnSecondDiag(player, column, row);
     }
 
     /**
-     *
+     * play randomly a game between two players
      */
     public void play() {
         boolean player = true;
@@ -283,6 +311,10 @@ public class Morpion extends JPanel {
         LOGGER.warning("Player "+(player ? 1 : 2)+" won !");
     }
 
+    /**
+     * change level of messages displayed in the console
+     * @param level
+     */
     public void setLevelLogger(Level level) {
         LOGGER.setLevel(level);
     }

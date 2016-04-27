@@ -10,8 +10,8 @@ import java.awt.LayoutManager;
 import java.util.logging.Logger;
 
 /**
- * cell of the picross
- * @author wilhelm
+ * cell of the Morpion
+ * @author Guillaume
  *
  */
 public class Cell extends JPanel {

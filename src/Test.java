@@ -1,8 +1,8 @@
 import java.util.logging.Level;
 
 /**
-  class to launch the picross and the solver
-  @author guillaume
+  class to launch the Morpion
+  @author Guillaume
  
  */
 public class Test{
@@ -13,9 +13,12 @@ public class Test{
 	}
 	
 	/**
-	  create a picross, solve it and display it
-	  @author Guillaume
-	 */
+	 * create a Morpion, launch the game, and display it
+	 * @param l : index of the Morpion
+	 * @param i : number of columns
+	 * @param j : number of rows
+     * @param k : aim of the morpion
+     */
 	public static void testOnce(int l, int i, int j, int k) {
 		Morpion p = new Morpion(i, j, k);
 		Window f = new Window(p, "Test" + l);
@@ -24,16 +27,4 @@ public class Test{
 		try {Thread.sleep(1000);}catch(Exception e){}
 		return;
 	}
-	
-	/**
-	  create a picrossColored, solve it and display it
-	  @param file
-	  @author Guillaume
-	 */
-	/*public static void testColored(String file) {
-		MorpionColored p = new MorpionColored(new File(file).getAbsolutePath());
-		Window f = new Window(p, file);
-		p.solveOpt();
-		//try {Thread.sleep(1000);}catch(Exception e){}
-	}*/
 }
