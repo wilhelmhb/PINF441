@@ -1,12 +1,12 @@
 import javax.swing.JPanel;
 
 import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Morpion extends JPanel {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
     /*
      * definition of the dimensions of each cell
      */
@@ -100,7 +100,7 @@ public class Morpion extends JPanel {
     /**
      *
      */
-    public void move(boolean player, int row, int column) {
+    public void move(boolean player, int column, int row) {
         a[column][row] = player;
         if(player) {
             c[column][row].changeColor(this.checked);
@@ -113,11 +113,11 @@ public class Morpion extends JPanel {
     /**
      *
      */
-    public boolean allowedMove(boolean player, int row, int column) {
+    public boolean allowedMove(boolean player, int column, int row) {
         if(this.a[column][row] != null) {
             return false;
         }
-        move(player, row, column);
+        move(player, column, row);
         return true;
     }
 
@@ -280,6 +280,10 @@ public class Morpion extends JPanel {
             }
             player = !player;
         }
-        LOGGER.info("Player "+(player ? 1 : 2)+" won !");
+        LOGGER.warning("Player "+(player ? 1 : 2)+" won !");
+    }
+
+    public void setLevelLogger(Level level) {
+        LOGGER.setLevel(level);
     }
 }
