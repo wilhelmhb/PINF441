@@ -51,6 +51,15 @@ public class MorpionTest {
     }
 
     @Test
+    public void testMove4() {
+        Morpion p = new Morpion(3,3,3);
+        p.move(false, 0, 1);
+        Boolean[][] a = new Boolean[3][3];
+        a[1][0] = false;
+        assertTrue(equalArrays(p.a,a));
+    }
+
+    @Test
     public void testAllowedMove() {
         Morpion p = new Morpion(3,3,3);
         assertTrue("AllowedMove",p.allowedMove(true, 1, 1));
@@ -108,4 +117,16 @@ public class MorpionTest {
         assertNull("chooseAuthorisedRow.2", p.a[c][r]);
     }
 
+    @Test
+    public void testChooseAuthorisedRow2() {
+        Morpion p = new Morpion(3,3,3);
+        p.a[0][1] = p.a[0][2] = p.a[1][1] = p.a[0][0] = true;
+        p.a[2][1] = p.a[2][2] = p.a[1][0] = p.a[1][2] = false;
+        int c = p.chooseNotFullColumn();
+        LOGGER.info("Choosed column : "+ c);
+        assertFalse("chooseAuthorisedRow2.1", p.isColumnFull(c));
+        int r = p.chooseAuthorisedRow(c);
+        LOGGER.info("Choosed cell : "+ c +","+r);
+        assertNull("chooseAuthorisedRow2.2", p.a[c][r]);
+    }
 }
