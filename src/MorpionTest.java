@@ -55,7 +55,7 @@ public class MorpionTest {
         Morpion p = new Morpion(3,3,3);
         p.move(false, 0, 1);
         Boolean[][] a = new Boolean[3][3];
-        a[1][0] = false;
+        a[0][1] = false;
         assertTrue(equalArrays(p.a,a));
     }
 
@@ -101,8 +101,8 @@ public class MorpionTest {
         Morpion p = new Morpion(3,3,3);
         p.move(true, 0, 0);
         assertFalse("isFullColumn.1", p.isColumnFull(0));
-        p.move(false, 1, 0);
-        p.move(true, 2, 0);
+        p.move(false, 0, 1);
+        p.move(true, 0, 2);
         assertTrue("isFullColumn.2", p.isColumnFull(0));
     }
 
@@ -113,7 +113,7 @@ public class MorpionTest {
         p.a[2][1] = p.a[2][2] = p.a[1][0] = false;
         int c = p.chooseNotFullColumn();
         assertFalse("chooseAuthorisedRow.1", p.isColumnFull(c));
-        int r = p.chooseAuthorisedRow(c);
+        int r = p.chooseAllowedRow(c);
         assertNull("chooseAuthorisedRow.2", p.a[c][r]);
     }
 
@@ -125,7 +125,7 @@ public class MorpionTest {
         int c = p.chooseNotFullColumn();
         LOGGER.info("Choosed column : "+ c);
         assertFalse("chooseAuthorisedRow2.1", p.isColumnFull(c));
-        int r = p.chooseAuthorisedRow(c);
+        int r = p.chooseAllowedRow(c);
         LOGGER.info("Choosed cell : "+ c +","+r);
         assertNull("chooseAuthorisedRow2.2", p.a[c][r]);
     }
