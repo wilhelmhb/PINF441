@@ -315,11 +315,12 @@ public class Morpion extends JPanel {
         for (int k = 0; k < nb_columns * nb_rows; k++) {
             LOGGER.info(k + " coups déjà joués.");
             if (playOnce(player)) {
-                break;
+                LOGGER.warning("Player " + (player ? 1 : 2) + " won !");
+                return;
             }
             player = !player;
         }
-        LOGGER.warning("Player "+(player ? 1 : 2)+" won !");
+        LOGGER.warning("Match nul !");
     }
 
     /**
