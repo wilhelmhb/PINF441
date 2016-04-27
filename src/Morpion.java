@@ -49,7 +49,7 @@ public class Morpion extends JPanel {
 
         for(int k = 0 ; k < nb_columns ; k++){
             for(int i = 0 ; i < nb_rows ; i++){
-                Cell c = new Cell(cell_width, cell_height, unknown, null);
+                Cell c = new Cell(cell_width, cell_height, unknown);
                 gbc.gridx = k;
                 gbc.gridy = i;
                 if(k == nb_columns-1){

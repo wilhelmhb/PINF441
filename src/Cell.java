@@ -21,12 +21,12 @@ public class Cell extends JPanel {
     int height;
 
     /**
-     * creates a cell for the picross
+     * creates a cell for the Morpion
      * @param w : int, width of the cell
      * @param h : int, height of the cell
      * @param c : Color, background color for the cell
      */
-    public Cell(int w, int h, Color c, Integer value) {
+    public Cell(int w, int h, Color c) {
         this.background = c;
         this.width = w;
         this.height = h;
