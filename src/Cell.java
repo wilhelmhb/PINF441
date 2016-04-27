@@ -31,7 +31,7 @@ public class Cell extends JPanel {
         this.width = w;
         this.height = h;
         this.setPreferredSize(new Dimension(w,h));//we want the cell to have the announced size
-        this.setMinimumSize(new Dimension(20,20));//the cell has to be at least 10*10
+        this.setMinimumSize(new Dimension(10,10));//the cell has to be at least 10*10
         this.setBackground(this.background);//color the cell
         this.setBorder(BorderFactory.createLineBorder(Color.black));//add a border to the cell
     }

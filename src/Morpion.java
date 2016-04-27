@@ -60,8 +60,8 @@ public class Morpion extends JPanel {
                 add(c,gbc);
             }
         }
-        this.setPreferredSize(new Dimension(600, 600));
-        this.setMinimumSize(new Dimension(600, 600));
+        this.setPreferredSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
+        this.setMinimumSize(new Dimension(10, 10));
     }
 
     /**
@@ -71,9 +71,21 @@ public class Morpion extends JPanel {
      * @param aim : number of cells in a range to reach in order to win
      */
     public Morpion(int height, int width, int aim) {
-        /* Instantiate the constants in the picross */
-        this.cell_width = 50;
-        this.cell_height = 50;
+        this(height, width, aim, 50, 50);
+    }
+
+    /**
+     *   instanciate a Morpion given the size, aim and dimensions
+     * @param height
+     * @param width
+     * @param aim : number of cells in a range to reach in order to win
+     * @param cell_height
+     * @param cell_width
+     */
+    public Morpion(int height, int width, int aim, int cell_height, int cell_width) {
+        /* Instantiate the constants in the Morpion */
+        this.cell_width = cell_width;
+        this.cell_height = cell_height;
         this.nb_columns = width;
         this.nb_rows = height;
         this.unknown = Color.GRAY;
@@ -81,8 +93,7 @@ public class Morpion extends JPanel {
         this.unchecked = Color.WHITE;
         this.a = new Boolean[nb_columns][nb_rows];
         this.c = new Cell[nb_columns][nb_rows];
-        /* number of additional cells for the clues */
-        this.setSize(new Dimension(600, 600));
+        this.setSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
         this.aim = aim;
         generateGraphics();
 
