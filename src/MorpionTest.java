@@ -1,3 +1,4 @@
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertFalse;
@@ -128,5 +129,14 @@ public class MorpionTest {
         int r = p.chooseAllowedRow(c);
         LOGGER.info("Choosed cell : "+ c +","+r);
         assertNull("chooseAuthorisedRow2.2", p.a[c][r]);
+    }
+
+    @Test
+    public void testMakeACross() throws InterruptedException{
+        Morpion p = new Morpion(1,1,1);
+        Window f = new Window(p, "Test", 50, 50);
+        p.setLevelLogger(Level.FINE);
+        p.play();
+        Thread.sleep(10000);
     }
 }

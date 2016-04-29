@@ -179,7 +179,7 @@ public class Morpion extends JPanel {
     public boolean isColumnFull(int column) {
         for(int k = 0; k < this.nb_rows ; k++) {
             if(this.a[column][k] == null) {
-                LOGGER.info(k+ "");
+                LOGGER.finer(k+ "");
                 return false;
             }
         }
@@ -219,7 +219,7 @@ public class Morpion extends JPanel {
     public boolean playOnce(boolean player) {
         int column = chooseNotFullColumn();
         int row = chooseAllowedRow(column);
-        LOGGER.info("selected column : "+ column + " and selected row : "+ row);
+        LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
         if(!allowedMove(player, column, row)) {
             LOGGER.severe("Tes algos sont pourraves, vieux !");
         }
@@ -245,6 +245,13 @@ public class Morpion extends JPanel {
             count++;
             column_right++;
         }
+        if(count == this.aim) {
+            LOGGER.fine("won horizontally : search for crosses");
+            for(int i = ++column_left ; i < column_right ; i++) {
+                c[i][row].makeACross();
+                LOGGER.fine("made a cross on cell (" + i + "," + row + ")");
+            }
+        }
         return count == this.aim;
     }
 
@@ -266,6 +273,13 @@ public class Morpion extends JPanel {
         while((row_down < nb_rows)&&(a[column][row_down] != null)&&(a[column][row_down] == player)) {
             count++;
             row_down++;
+        }
+        if(count == this.aim) {
+            LOGGER.fine("won vertically : search for crosses");
+            for(int i = ++row_up ; i < row_down ; i++) {
+                c[column][i].makeACross();
+                LOGGER.fine("made a cross on cell (" + column + "," + i + ")");
+            }
         }
         return count == this.aim;
     }
@@ -293,6 +307,15 @@ public class Morpion extends JPanel {
             row_down++;
             column_left--;
         }
+        if(count == this.aim) {
+            LOGGER.fine("won on first bisector : search for crosses");
+            column_right--;
+            for(int i = ++row_up ; i < row_down ; i++) {
+                c[column_right][i].makeACross();
+                LOGGER.fine("made a cross on cell (" + column_right + "," + i + ")");
+                column_right--;
+            }
+        }
         return count == this.aim;
     }
 
@@ -319,6 +342,15 @@ public class Morpion extends JPanel {
             row_up--;
             column_left--;
         }
+        if(count == this.aim) {
+            LOGGER.fine("won on second bisector : search for crosses");
+            column_left++;
+            for(int i = ++row_up ; i < row_down ; i++) {
+                c[column_left][i].makeACross();
+                LOGGER.fine("made a cross on cell (" + column_left + "," + i + ")");
+                column_left++;
+            }
+        }
         return count == this.aim;
     }
 
@@ -339,14 +371,14 @@ public class Morpion extends JPanel {
     public void play() {
         boolean player = true;
         for (int k = 0; k < nb_columns * nb_rows; k++) {
-            LOGGER.info(k + " coups déjà joués.");
+            LOGGER.finer(k + " coups déjà joués.");
             if (playOnce(player)) {
-                LOGGER.warning("Player " + (player ? 1 : 2) + " won !");
+                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
                 return;
             }
             player = !player;
         }
-        LOGGER.warning("Match nul !");
+        LOGGER.info("Match nul !");
     }
 
     /**
