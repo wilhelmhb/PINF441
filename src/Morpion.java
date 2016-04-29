@@ -28,6 +28,69 @@ public class Morpion extends JPanel {
     Cell[][] c;
 
     /**
+     * instantiate a Morpion given the size, aim, dimensions and colors for the players
+     * @param height
+     * @param width
+     * @param aim : number of cells in a range to reach in order to win
+     * @param cell_height
+     * @param cell_width
+     * @param color_first_player
+     * @param color_second_player
+     */
+    public Morpion(int height, int width, int aim, int cell_height, int cell_width, Color color_first_player, Color color_second_player) {
+        /* Instantiate the constants in the Morpion */
+        this.cell_width = cell_width;
+        this.cell_height = cell_height;
+        this.nb_columns = width;
+        this.nb_rows = height;
+        this.unknown = Color.GRAY;
+        this.checked = color_first_player;
+        this.unchecked = color_second_player;
+        this.a = new Boolean[nb_columns][nb_rows];
+        this.c = new Cell[nb_columns][nb_rows];
+        this.setSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
+        this.aim = aim;
+        generateGraphics();
+
+        LOGGER.fine("Morpion instancié");
+        //this.setPreferredSize(new Dimension(cell_width*(nb_columns + nb_clues_rows),cell_height*(nb_rows)));
+    }
+
+    /**
+     * instantiate a Morpion given the size, aim and dimensions
+     * @param height
+     * @param width
+     * @param aim
+     * @param cell_width
+     * @param cell_height
+     */
+    public Morpion(int height, int width, int aim, int cell_width, int cell_height) {
+        this(height, width, aim, cell_width, cell_height, Color.WHITE, Color.BLACK);
+    }
+
+    /**
+     * instantiate a Morpion given the size, aim and colors for the players
+     * @param height
+     * @param width
+     * @param aim
+     * @param color_first_player
+     * @param color_second_player
+     */
+    public Morpion(int height, int width, int aim, Color color_first_player, Color color_second_player) {
+        this(height, width, aim, 50, 50, color_first_player, color_second_player);
+    }
+
+    /**
+     * instantiate a Morpion given the size and aim
+     * @param height
+     * @param width
+     * @param aim : number of cells in a range to reach in order to win
+     */
+    public Morpion(int height, int width, int aim) {
+        this(height, width, aim, 50, 50);
+    }
+
+    /**
      * (non-Javadoc)
      * @see javax.swing.JComponent#paintComponent(Graphics)
      */
@@ -62,43 +125,6 @@ public class Morpion extends JPanel {
         }
         this.setPreferredSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
         this.setMinimumSize(new Dimension(10, 10));
-    }
-
-    /**
-     *   instanciate a Morpion given the size, aim and dimensions
-     * @param height
-     * @param width
-     * @param aim : number of cells in a range to reach in order to win
-     */
-    public Morpion(int height, int width, int aim) {
-        this(height, width, aim, 50, 50);
-    }
-
-    /**
-     *   instanciate a Morpion given the size, aim and dimensions
-     * @param height
-     * @param width
-     * @param aim : number of cells in a range to reach in order to win
-     * @param cell_height
-     * @param cell_width
-     */
-    public Morpion(int height, int width, int aim, int cell_height, int cell_width) {
-        /* Instantiate the constants in the Morpion */
-        this.cell_width = cell_width;
-        this.cell_height = cell_height;
-        this.nb_columns = width;
-        this.nb_rows = height;
-        this.unknown = Color.GRAY;
-        this.checked = Color.BLACK;
-        this.unchecked = Color.WHITE;
-        this.a = new Boolean[nb_columns][nb_rows];
-        this.c = new Cell[nb_columns][nb_rows];
-        this.setSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
-        this.aim = aim;
-        generateGraphics();
-
-        LOGGER.info("Morpion instancié");
-        //this.setPreferredSize(new Dimension(cell_width*(nb_columns + nb_clues_rows),cell_height*(nb_rows)));
     }
 
     /**

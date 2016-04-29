@@ -20,9 +20,9 @@ public class Test{
      * @param k : aim of the morpion
      */
 	public static void testOnce(int l, int i, int j, int k) {
-		Morpion p = new Morpion(i, j, k, 50, 50);
 		Window f = new Window(p, "Test" + l);
 		p.setLevelLogger(Level.WARNING);
+		Morpion p = new Morpion(i, j, k, 50, 50, Color.BLUE, Color.GREEN);
 		p.play();
 		try {Thread.sleep(1000);}catch(Exception e){}
 		return;
