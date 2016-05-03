@@ -1,10 +1,9 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class MorpionTest {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -12,10 +11,11 @@ public class MorpionTest {
     @Test
 	public void testMove() {
         Morpion p = new Morpion(3,3,3);
-        p.move(true, 1, 1);
+        p.move(true, 1, 1, 4);
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = true;
         assertTrue(p.a[1][1]);
+        assertEquals(new Long(2 * 81), p.state);
 	}
 
     public static boolean equalArrays(Boolean[][] i, Boolean[][] j) {
@@ -36,34 +36,37 @@ public class MorpionTest {
     @Test
     public void testMove2() {
         Morpion p = new Morpion(3,3,3);
-        p.move(true, 1, 1);
+        p.move(true, 1, 1, 4);
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = true;
         assertTrue(equalArrays(p.a,a));
+        assertEquals(new Long(2 * 81), p.state);
     }
 
     @Test
     public void testMove3() {
         Morpion p = new Morpion(3,3,3);
-        p.move(false, 1, 1);
+        p.move(false, 1, 1, 4);
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = false;
         assertTrue(equalArrays(p.a,a));
+        assertEquals(new Long(1 * 81), p.state);
     }
 
     @Test
     public void testMove4() {
         Morpion p = new Morpion(3,3,3);
-        p.move(false, 0, 1);
+        p.move(false, 0, 1, 3);
         Boolean[][] a = new Boolean[3][3];
         a[0][1] = false;
         assertTrue(equalArrays(p.a,a));
+        assertEquals(new Long(1 * 27), p.state);
     }
 
     @Test
     public void testAllowedMove() {
         Morpion p = new Morpion(3,3,3);
-        assertTrue("AllowedMove",p.allowedMove(true, 1, 1));
+        assertTrue("AllowedMove",p.allowedMove(true, 1, 1, 4));
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = true;
         assertTrue("Result", equalArrays(p.a,a));
@@ -72,10 +75,10 @@ public class MorpionTest {
     @Test
     public void testAllowedMove2() {
         Morpion p = new Morpion(3,3,3);
-        assertTrue("AllowedMove2.1",p.allowedMove(true, 1, 1));
+        assertTrue("AllowedMove2.1",p.allowedMove(true, 1, 1, 4));
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = true;
-        assertFalse("AllowedMove2.2",p.allowedMove(false, 1, 1));
+        assertFalse("AllowedMove2.2",p.allowedMove(false, 1, 1, 4));
         assertTrue("Result2", equalArrays(p.a,a));
     }
 
@@ -100,10 +103,10 @@ public class MorpionTest {
     @Test
     public void testIsFullColumn2() {
         Morpion p = new Morpion(3,3,3);
-        p.move(true, 0, 0);
+        p.move(true, 0, 0, 0);
         assertFalse("isFullColumn.1", p.isColumnFull(0));
-        p.move(false, 0, 1);
-        p.move(true, 0, 2);
+        p.move(false, 0, 1, 3);
+        p.move(true, 0, 2, 6);
         assertTrue("isFullColumn.2", p.isColumnFull(0));
     }
 
@@ -137,6 +140,6 @@ public class MorpionTest {
         Window f = new Window(p, "Test", 50, 50);
         p.setLevelLogger(Level.FINE);
         p.play();
-        Thread.sleep(10000);
+        //Thread.sleep(10000);
     }
 }
