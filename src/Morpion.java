@@ -1,6 +1,11 @@
+import algorithmes.Game;
+
 import javax.swing.JPanel;
 
 import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,7 +13,7 @@ import java.util.logging.Logger;
  * class representing the whole game
  * @author Guillaume
  */
-public class Morpion extends JPanel {
+public class Morpion extends JPanel implements Game<Long, Integer, Boolean> {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     /* definition of the dimensions of each cell */
@@ -386,6 +391,38 @@ public class Morpion extends JPanel {
      * @param level
      */
     public void setLevelLogger(Level level) {
-        LOGGER.setLevel(level);
+        for(Handler h : LOGGER.getHandlers()) {
+            h.setLevel(level);
+        }
+    }
+
+    @Override
+    public Long getinitialState() {
+        return null;
+    }
+
+    @Override
+    public Boolean getPlayer(Long aLong) {
+        return null;
+    }
+
+    @Override
+    public List<Integer> getActions(Long aLong) {
+        return null;
+    }
+
+    @Override
+    public Long getResult(Long aLong, Integer integer) {
+        return null;
+    }
+
+    @Override
+    public boolean isTerminal(Long aLong) {
+        return false;
+    }
+
+    @Override
+    public double getUtility(Long aLong, Boolean aBoolean) {
+        return 0;
     }
 }
