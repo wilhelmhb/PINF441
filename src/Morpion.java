@@ -1,4 +1,7 @@
 import algorithmes.Game;
+import structures.Pair;
+import structures.Tuple;
+import sun.awt.image.ImageWatched;
 
 import javax.swing.JPanel;
 
@@ -13,7 +16,7 @@ import java.util.logging.Logger;
  * class representing the whole game
  * @author Guillaume
  */
-public class Morpion extends JPanel implements Game<Long, Integer, Boolean> {
+public class Morpion extends JPanel implements Game<Position, Pair<Integer, Integer>, Boolean> {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     /* definition of the dimensions of each cell */
@@ -29,13 +32,8 @@ public class Morpion extends JPanel implements Game<Long, Integer, Boolean> {
     Color checked;
     Color unchecked;
     /* values of the grid */
-    Boolean[][] a;//a[column][row]
-    Long state;//sum of a[i][j] * 3^(i*nb_columns + j)
+    Position state;
     Cell[][] c;
-
-    Long[] powers; //the powers of 3 we'll need
-
-    Boolean player;
 
     /**
      * instantiate a Morpion given the size, aim, dimensions and colors for the players
@@ -56,20 +54,11 @@ public class Morpion extends JPanel implements Game<Long, Integer, Boolean> {
         this.unknown = Color.GRAY;
         this.checked = color_first_player;
         this.unchecked = color_second_player;
-        this.a = new Boolean[nb_columns][nb_rows];
-        this.state = new Long(0);
+        this.state = new Boolean[nb_columns][nb_rows];
         this.c = new Cell[nb_columns][nb_rows];
         this.setSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
         this.aim = aim;
         generateGraphics();
-
-        int i = nb_columns * nb_rows;
-        this.powers = new Long[i];
-        Long p = new Long(1);
-        for(int k = 0; k < i; k++) {
-            this.powers[k] = p;
-            p = 3 * p;
-        }
 
         LOGGER.fine("Morpion instancié");
         //this.setPreferredSize(new Dimension(cell_width*(nb_columns + nb_clues_rows),cell_height*(nb_rows)));
@@ -243,7 +232,7 @@ public class Morpion extends JPanel implements Game<Long, Integer, Boolean> {
         if(!allowedMove(player, column, row, column + row * nb_columns)) {
             LOGGER.severe("Tes algos sont pourraves, vieux !");
         }
-        return isWon(player, column, row);
+        return isWon(player, column, row, column +row * nb_columns);
     }
 
     /**
@@ -253,7 +242,7 @@ public class Morpion extends JPanel implements Game<Long, Integer, Boolean> {
      * @param row
      * @return true if thanks to a move in cell (column, row), player won thanks to a row
      */
-    public boolean isWonHorizontally(boolean player, Integer column, Integer row) {
+    public boolean isWonHorizontally(boolean player, Integer column, Integer row, Integer index) {
         Integer count = 1;
         Integer column_left = column - 1;
         Integer column_right = column + 1;
@@ -265,7 +254,22 @@ public class Morpion extends JPanel implements Game<Long, Integer, Boolean> {
             count++;
             column_right++;
         }
-        if(count == this.aim) {
+        Integer count2 = 1;
+        Integer cell_left = index - 1;
+        Integer cell_right = index + 1;
+        Boolean b = getCell(index);
+        while((cell_left % nb_columns >= 0)&&(b != null)&&(b == player)) {
+            count2++;
+            cell_left--;
+            b = getCell(cell_left);
+        }
+        b = getCell(index);
+        while((cell_left % nb_columns >= 0)&&(b != null)&&(b == player)) {
+            count2++;
+            cell_right++;
+            b = getCell(cell_left);
+        }
+        if(count2 == this.aim) {
             LOGGER.fine("won horizontally : search for crosses");
             for(Integer i = ++column_left ; i < column_right ; i++) {
                 c[i][row].makeACross();
@@ -381,8 +385,8 @@ public class Morpion extends JPanel implements Game<Long, Integer, Boolean> {
      * @param row
      * @return true if player won thanks to a piece in cell (column, row)
      */
-    public boolean isWon(boolean player, Integer column, Integer row) {
-        return isWonHorizontally(player, column, row)||isWonVertically(player, column, row)||isWonOnFirstDiag(player, column, row)||isWonOnSecondDiag(player, column, row);
+    public boolean isWon(boolean player, Integer column, Integer row, Integer index) {
+        return isWonHorizontally(player, column, row, index)||isWonVertically(player, column, row)||isWonOnFirstDiag(player, column, row)||isWonOnSecondDiag(player, column, row);
     }
 
     /**
@@ -411,52 +415,75 @@ public class Morpion extends JPanel implements Game<Long, Integer, Boolean> {
         }
     }
 
-    @Override
-    public Long getinitialState() {
-        return new Long(0);
-    }
-
-    @Override
-    public Boolean getPlayer(Long aLong) {
-        return this.player;
-    }
-
-    @Override
-    public List<Integer> getActions(Long aLong) {
-        LinkedList l = new LinkedList();
+    public Tuple<List<Integer>, List<Integer>> getFullCells() {
+        LinkedList l1 = new LinkedList();
+        LinkedList l2 = new LinkedList();
+        Long aLong = this.state;
         Integer k = 0;
         while (aLong != 0) {
-            if(aLong % 3 == 0) {
-                l.add(k);
+            if(aLong % 3 != 0) {
+                l1.add(k);
+                l2.add(aLong % 3);
             }
             k++;
             aLong /= 3;
         }
-        for(Integer i = k; i < nb_columns * nb_rows ; i++) {
-            l.add(i);
+        return new Tuple(l1, l2);
+    }
+
+    public Boolean getCell(Integer index) {
+        LOGGER.info("index : " + index);
+        int i = (int) ((long) ((this.state / powers[index]) % 3));
+        switch (i) {
+            case 0:
+                return null;
+            case 1:
+                return false;
+            case 2:
+                return true;
+            default:
+                LOGGER.severe("Value of cell unknown");
+                return null;
         }
-        return l;
+    }
+
+
+    @Override
+    public Position getInitialState() {
+        return this.state;
     }
 
     @Override
-    public Long getResult(Long aLong, Integer integer) {
-        if(allowedMove(this.player, (integer % nb_columns), (integer / nb_columns), integer)) {
-            player = !player;
-            return state;
-        }
-        else {
-            LOGGER.severe("Tes algos sont pourraves, vieux !");
-        }
+    public Boolean getPlayer(Position position) {
+        return position.getPlayer();
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getActions(Position position) {
         return null;
     }
 
     @Override
-    public boolean isTerminal(Long aLong) {
-        return false;//include other arguments
+    public Position getResult(Position position, Pair<Integer, Integer> integerIntegerPair) {
+        return position.getResult();
     }
 
     @Override
-    public double getUtility(Long aLong, Boolean aBoolean) {
+    public boolean isTerminal(Position position, Pair<Integer, Integer> integerIntegerPair) {
+        if(position.isFull()) {
+            LOGGER.info("La grille est pleine.");
+            return true;
+        }
+        return isWon(!position.getPlayer(), integerIntegerPair.getFirst(), integerIntegerPair.getSecond(), 0);
+    }
+
+    @Override
+    public boolean isTerminal(Position position) {
+        return false;
+    }
+
+    @Override
+    public double getUtility(Position position, Boolean aBoolean) {
         return 0;
     }
 }
