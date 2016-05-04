@@ -25,7 +25,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
     /* how many cells do we have ? */
     Integer nb_columns;
     Integer nb_rows;
-    /* how many cell in a range do we have to possess in order to win ? */
+    /* how many cells in a range do we have to possess in order to win ? */
     Integer aim;
     /* what colors will we use ? */
     Color unknown;
@@ -141,9 +141,9 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      * @param column
      * @param row
      */
-    public void move(boolean player, Integer column, Integer row, Integer index) {
-        state += player ? 2 * this.powers[index] : 1 * this.powers[index];
-        a[column][row] = player;
+    public void move(boolean player, Integer column, Integer row) {
+        //a[column][row] = player;
+        state.move(column, row);
         if(player) {
             c[column][row].changeColor(this.checked);
         }
@@ -159,11 +159,11 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      * @param row
      * @return true if move is allowed
      */
-    public boolean allowedMove(Boolean player, Integer column, Integer row, Integer index) {
-        if(this.a[column][row] != null) {
+    public boolean allowedMove(Boolean player, Integer column, Integer row) {
+        if(this.state.getState()[column][row] != null) {
             return false;
         }
-        move(player, column, row, index);
+        move(player, column, row);
         return true;
     }
 
@@ -174,7 +174,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      */
     public Integer chooseAllowedRow(Integer column) {
         Integer row = (int) Math.floor(Math.random() * this.nb_rows);
-        while(a[column][row] != null) {
+        while(state.getState()[column][row] != null) {
             row = (int) Math.floor(Math.random() * this.nb_rows);
         }
         return row;
@@ -187,7 +187,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      */
     public boolean isColumnFull(Integer column) {
         for(Integer k = 0; k < this.nb_rows ; k++) {
-            if(this.a[column][k] == null) {
+            if(this.state.getState()[column][k] == null) {
                 LOGGER.finer(k+ "");
                 return false;
             }
@@ -229,10 +229,10 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
         Integer column = chooseNotFullColumn();
         Integer row = chooseAllowedRow(column);
         LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
-        if(!allowedMove(player, column, row, column + row * nb_columns)) {
+        if(!allowedMove(player, column, row)) {
             LOGGER.severe("Tes algos sont pourraves, vieux !");
         }
-        return isWon(player, column, row, column +row * nb_columns);
+        return isWon(player, column, row);
     }
 
     /**
@@ -242,10 +242,11 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      * @param row
      * @return true if thanks to a move in cell (column, row), player won thanks to a row
      */
-    public boolean isWonHorizontally(boolean player, Integer column, Integer row, Integer index) {
+    public boolean isWonHorizontally(boolean player, Integer column, Integer row) {
         Integer count = 1;
         Integer column_left = column - 1;
         Integer column_right = column + 1;
+        Boolean[][] a = state.getState();
         while((column_left >= 0)&&(a[column_left][row] != null)&&(a[column_left][row] == player)) {
             count++;
             column_left--;
@@ -255,20 +256,6 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
             column_right++;
         }
         Integer count2 = 1;
-        Integer cell_left = index - 1;
-        Integer cell_right = index + 1;
-        Boolean b = getCell(index);
-        while((cell_left % nb_columns >= 0)&&(b != null)&&(b == player)) {
-            count2++;
-            cell_left--;
-            b = getCell(cell_left);
-        }
-        b = getCell(index);
-        while((cell_left % nb_columns >= 0)&&(b != null)&&(b == player)) {
-            count2++;
-            cell_right++;
-            b = getCell(cell_left);
-        }
         if(count2 == this.aim) {
             LOGGER.fine("won horizontally : search for crosses");
             for(Integer i = ++column_left ; i < column_right ; i++) {
@@ -290,6 +277,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
         Integer count = 1;
         Integer row_up = row - 1;
         Integer row_down = row + 1;
+        Boolean[][] a = state.getState();
         while((row_up >= 0)&&(a[column][row_up] != null)&&(a[column][row_up] == player)) {
             count++;
             row_up--;
@@ -321,6 +309,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
         Integer row_down = row + 1;
         Integer column_left = column - 1;
         Integer column_right = column + 1;
+        Boolean[][] a = state.getState();
         while((row_up >=0)&&(column_right < nb_columns)&&(a[column_right][row_up] != null)&&(a[column_right][row_up] == player)) {
             count++;
             row_up--;
@@ -356,6 +345,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
         Integer row_down = row + 1;
         Integer column_left = column - 1;
         Integer column_right = column + 1;
+        Boolean[][] a = state.getState();
         while((row_down < nb_rows)&&(column_right < nb_columns)&&(a[column_right][row_down] != null)&&(a[column_right][row_down] == player)) {
             count++;
             row_down++;
@@ -385,8 +375,8 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      * @param row
      * @return true if player won thanks to a piece in cell (column, row)
      */
-    public boolean isWon(boolean player, Integer column, Integer row, Integer index) {
-        return isWonHorizontally(player, column, row, index)||isWonVertically(player, column, row)||isWonOnFirstDiag(player, column, row)||isWonOnSecondDiag(player, column, row);
+    public boolean isWon(boolean player, Integer column, Integer row) {
+        return isWonHorizontally(player, column, row)||isWonVertically(player, column, row)||isWonOnFirstDiag(player, column, row)||isWonOnSecondDiag(player, column, row);
     }
 
     /**
@@ -474,12 +464,19 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
             LOGGER.info("La grille est pleine.");
             return true;
         }
-        return isWon(!position.getPlayer(), integerIntegerPair.getFirst(), integerIntegerPair.getSecond(), 0);
+        return isWon(!position.getPlayer(), integerIntegerPair.getFirst(), integerIntegerPair.getSecond());
     }
 
     @Override
     public boolean isTerminal(Position position) {
-        return false;
+        for(int i = 0 ; i < position.getState().length ; i++) {
+            for(int j = 0 ; j < position.getState()[0].length ; j++) {
+                if(isWon(position.getCell(i,j), i, j)) {
+                    return true;
+                }
+            }
+        }
+        return isMorpionFull();
     }
 
     @Override
