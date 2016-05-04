@@ -11,13 +11,13 @@ public class Window extends JFrame {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     /**
-     * display a Morpion in a window
-     * @param m : Morpion instance to display in the window
+     * display a Tictactoe in a window
+     * @param m : Tictactoe instance to display in the window
      * @param name : name of the window
      * @param height
      * @param width
      */
-    public Window(Morpion m, String name, int height, int width){
+    public Window(Tictactoe m, String name, int height, int width){
         m.setMinimumSize(new Dimension(600,600));
         this.setTitle(name);
         this.setSize(height, width);//Set the window to height and width

@@ -1,7 +1,6 @@
 import algorithmes.Game;
 import structures.Pair;
 import structures.Tuple;
-import sun.awt.image.ImageWatched;
 
 import javax.swing.JPanel;
 
@@ -16,7 +15,7 @@ import java.util.logging.Logger;
  * class representing the whole game
  * @author Guillaume
  */
-public class Morpion extends JPanel implements Game<Position, Pair<Integer, Integer>, Boolean> {
+public class Tictactoe extends JPanel implements Game<Position, Pair<Integer, Integer>, Boolean> {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     /* definition of the dimensions of each cell */
@@ -35,8 +34,36 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
     Position state;
     Cell[][] c;
 
+    public Tictactoe(Integer cell_height, Integer cell_width, Color color_first_player, Color color_second_player) {
+        Scanner sc = new Scanner(System.in);
+        this.nb_columns = sc.nextInt();
+        this.nb_rows = sc.nextInt();
+        this.aim = sc.nextInt();
+        this.state = new Position();
+        String s;
+        for(int i = 0 ; i < nb_rows ; i++) {
+            s = sc.nextLine();
+            for(int j = 0 ; j < nb_columns ; i++) {
+                switch(s.charAt(j)) {
+                    case '0':
+                        state.set(i, j, true);
+                        break;
+                    case '@':
+                        state.set(i, j, false);
+                        break;
+                    default:
+                }
+            }
+        }
+        this.cell_height = cell_height;
+        this.cell_width = cell_width;
+        this.checked = color_first_player;
+        this.unchecked = color_second_player;
+        this.unknown = Color.GRAY;
+    }
+
     /**
-     * instantiate a Morpion given the size, aim, dimensions and colors for the players
+     * instantiate a Tictactoe given the size, aim, dimensions and colors for the players
      * @param height
      * @param width
      * @param aim : number of cells in a range to reach in order to win
@@ -45,8 +72,8 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      * @param color_first_player
      * @param color_second_player
      */
-    public Morpion(Integer height, Integer width, Integer aim, Integer cell_height, Integer cell_width, Color color_first_player, Color color_second_player) {
-        /* Instantiate the constants in the Morpion */
+    public Tictactoe(Integer height, Integer width, Integer aim, Integer cell_height, Integer cell_width, Color color_first_player, Color color_second_player) {
+        /* Instantiate the constants in the Tictactoe */
         this.cell_width = cell_width;
         this.cell_height = cell_height;
         this.nb_columns = width;
@@ -54,47 +81,47 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
         this.unknown = Color.GRAY;
         this.checked = color_first_player;
         this.unchecked = color_second_player;
-        this.state = new Boolean[nb_columns][nb_rows];
+        this.state = new Position(new Boolean[nb_columns][nb_rows]);
         this.c = new Cell[nb_columns][nb_rows];
         this.setSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
         this.aim = aim;
         generateGraphics();
 
-        LOGGER.fine("Morpion instancié");
+        LOGGER.fine("Tictactoe instancié");
         //this.setPreferredSize(new Dimension(cell_width*(nb_columns + nb_clues_rows),cell_height*(nb_rows)));
     }
 
     /**
-     * instantiate a Morpion given the size, aim and dimensions
+     * instantiate a Tictactoe given the size, aim and dimensions
      * @param height
      * @param width
      * @param aim
      * @param cell_width
      * @param cell_height
      */
-    public Morpion(Integer height, Integer width, Integer aim, Integer cell_width, Integer cell_height) {
+    public Tictactoe(Integer height, Integer width, Integer aim, Integer cell_width, Integer cell_height) {
         this(height, width, aim, cell_width, cell_height, Color.WHITE, Color.BLACK);
     }
 
     /**
-     * instantiate a Morpion given the size, aim and colors for the players
+     * instantiate a Tictactoe given the size, aim and colors for the players
      * @param height
      * @param width
      * @param aim
      * @param color_first_player
      * @param color_second_player
      */
-    public Morpion(Integer height, Integer width, Integer aim, Color color_first_player, Color color_second_player) {
+    public Tictactoe(Integer height, Integer width, Integer aim, Color color_first_player, Color color_second_player) {
         this(height, width, aim, 50, 50, color_first_player, color_second_player);
     }
 
     /**
-     * instantiate a Morpion given the size and aim
+     * instantiate a Tictactoe given the size and aim
      * @param height
      * @param width
      * @param aim : number of cells in a range to reach in order to win
      */
-    public Morpion(Integer height, Integer width, Integer aim) {
+    public Tictactoe(Integer height, Integer width, Integer aim) {
         this(height, width, aim, 50, 50);
     }
 
@@ -107,7 +134,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
     }
 
     /**
-     * generates the graphic aspect of our Morpion
+     * generates the graphic aspect of our Tictactoe
      */
     public void generateGraphics() {
         /* we use a grid layout */
@@ -127,7 +154,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
                     gbc.gridwidth = GridBagConstraints.REMAINDER;
                 }
                 this.c[k][i] = c;
-                a[k][i] = null;
+                state.state[k][i] = null;
                 add(c,gbc);
             }
         }
@@ -142,8 +169,8 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      * @param row
      */
     public void move(boolean player, Integer column, Integer row) {
-        //a[column][row] = player;
-        state.move(column, row);
+        this.state.state[column][row] = player;
+        //state.move(column, row);
         if(player) {
             c[column][row].changeColor(this.checked);
         }
@@ -211,7 +238,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      * test if a piece can be added somewhere in the game
      * @return true if no piece can be placed any more
      */
-    public boolean isMorpionFull() {
+    public boolean isTictactoeFull() {
         for(Integer i = 0 ; i < this.nb_columns ; i++) {
             if(!isColumnFull(i)) {
                 return false;
@@ -255,12 +282,12 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
             count++;
             column_right++;
         }
-        Integer count2 = 1;
-        if(count2 == this.aim) {
-            LOGGER.fine("won horizontally : search for crosses");
+        if(count == this.aim) {
+            LOGGER.info("won horizontally : search for crosses");
+            LOGGER.info(column_left + " : " + column_right);
             for(Integer i = ++column_left ; i < column_right ; i++) {
                 c[i][row].makeACross();
-                LOGGER.fine("made a cross on cell (" + i + "," + row + ")");
+                LOGGER.info("made a cross on cell (" + i + "," + row + ")");
             }
         }
         return count == this.aim;
@@ -383,7 +410,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
      * play randomly a game between two players
      */
     public void play() {
-        boolean player = true;
+        boolean player = state.getPlayer();
         for (Integer k = 0; k < nb_columns * nb_rows; k++) {
             LOGGER.finer(k + " coups déjà joués.");
             if (playOnce(player)) {
@@ -405,39 +432,6 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
         }
     }
 
-    public Tuple<List<Integer>, List<Integer>> getFullCells() {
-        LinkedList l1 = new LinkedList();
-        LinkedList l2 = new LinkedList();
-        Long aLong = this.state;
-        Integer k = 0;
-        while (aLong != 0) {
-            if(aLong % 3 != 0) {
-                l1.add(k);
-                l2.add(aLong % 3);
-            }
-            k++;
-            aLong /= 3;
-        }
-        return new Tuple(l1, l2);
-    }
-
-    public Boolean getCell(Integer index) {
-        LOGGER.info("index : " + index);
-        int i = (int) ((long) ((this.state / powers[index]) % 3));
-        switch (i) {
-            case 0:
-                return null;
-            case 1:
-                return false;
-            case 2:
-                return true;
-            default:
-                LOGGER.severe("Value of cell unknown");
-                return null;
-        }
-    }
-
-
     @Override
     public Position getInitialState() {
         return this.state;
@@ -455,7 +449,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
 
     @Override
     public Position getResult(Position position, Pair<Integer, Integer> integerIntegerPair) {
-        return position.getResult();
+        return position.getResult(position, integerIntegerPair);
     }
 
     @Override
@@ -476,7 +470,7 @@ public class Morpion extends JPanel implements Game<Position, Pair<Integer, Inte
                 }
             }
         }
-        return isMorpionFull();
+        return isTictactoeFull();
     }
 
     @Override

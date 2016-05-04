@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 /**
- * cell of the Morpion
+ * cell of the Tictactoe
  * @author Guillaume
  */
 public class Cell extends JPanel {
@@ -17,7 +17,7 @@ public class Cell extends JPanel {
     LinkedList<Line> diags;
 
     /**
-     * creates a cell for the Morpion
+     * creates a cell for the Tictactoe
      * @param w : int, width of the cell
      * @param h : int, height of the cell
      * @param c : Color, background color for the cell
