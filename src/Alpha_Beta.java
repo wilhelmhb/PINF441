@@ -1,5 +1,3 @@
-package algorithmes;
-
 public class Alpha_Beta<State, SuperState, Action, Player> extends Algorithmes<State, SuperState, Action, Player> implements AlgorithmesSearch<State, Action> {
 
 	public Alpha_Beta(Game<State, SuperState, Action, Player> game) {

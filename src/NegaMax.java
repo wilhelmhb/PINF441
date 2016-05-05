@@ -1,5 +1,3 @@
-package algorithmes;
-
 public class NegaMax<State, SuperState, Action, Player> extends Algorithmes<State, SuperState, Action, Player> implements AlgorithmesSearch<State, Action> {
 	
 	public NegaMax(Game<State, SuperState, Action, Player> game) {

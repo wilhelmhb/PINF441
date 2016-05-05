@@ -1,5 +1,3 @@
-package algorithmes;
-
 import java.util.List;
 
 public interface Game<State, SuperState, Action, Player> {

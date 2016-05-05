@@ -1,5 +1,3 @@
-package algorithmes;
-
 import java.util.*;
 import structures.Pair;
 
