@@ -31,11 +31,11 @@ public class PositionTicTacToe extends Position<Pair<Integer, Integer>> {
         Integer column = action.getFirst();
         Integer row = action.getSecond();
         if(position.state[column][row] != null) {
-            System.out.println("Problème, tu essayes de modifier une cellule déjà pleine !");
+            System.out.println("Problème, tu essayes de modifier une cellule déjà pleine : "+ column + "," + row);
             return null;
         }
         //make a move
-        Boolean[][] state = position.state.clone();
+        Boolean[][] state = position.cloneState();
         state[column][row] = position.player;
         Position p = new PositionTicTacToe(state, !position.player, position.utility, position.cells_left - 1, position.aim);
         if(p.isWon(position.player, column, row)) {
