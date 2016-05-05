@@ -247,4 +247,12 @@ public abstract class Position<Action> implements PositionInterface<Action> {
             System.out.println();
         }
     }
+
+    public Boolean[][] cloneState() {
+        Boolean[][] b = new Boolean[state.length][state[0].length];
+        for(int i = 0 ; i < state.length ; i++) {
+            b[i] = state[i].clone();
+        }
+        return b;
+    }
 }
