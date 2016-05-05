@@ -161,8 +161,18 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
      * @param player : true for player one, false for player 2
      * @param column
      */
-    public void move(boolean player, Integer column) {
-
+    public Integer move(boolean player, Integer column) {
+        int i = 0;
+        while(state.getCell(column, i) == null) {
+            i++;
+        }
+        i--;
+        if(i < 0) {
+            System.out.println("Problème, tu essayes de d'ajouter un pion dans une colonne pleine !");
+            return null;
+        }
+        state.setCell(column, i, player);
+        return i;
     }
 
     /**
@@ -172,7 +182,13 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
      * @return true if move is allowed
      */
     public Integer allowedMove(Boolean player, Integer column) {
-        return null;
+        if(isColumnFull(column)) {
+            System.out.println("Algo de choix moisi");
+            return null;
+        }
+        else {
+            return move(player, column);
+        }
     }
 
     /**
