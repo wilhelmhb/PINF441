@@ -3,3 +3,4 @@ doc/
 *.iml
 .idea/
 *.old
+src/structures/Entry.java
