@@ -1,11 +1,15 @@
 import algorithmes.Game;
 import structures.Pair;
-import structures.Tuple;
 
 import javax.swing.JPanel;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+
+import java.util.Scanner;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -15,24 +19,22 @@ import java.util.logging.Logger;
  * class representing the whole game
  * @author Guillaume
  */
-public class Tictactoe extends JPanel implements Game<Position, Pair<Integer, Integer>, Boolean> {
+public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Position, Pair<Integer, Integer>, Boolean> {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     /* definition of the dimensions of each cell */
-    Integer cell_width;
-    Integer cell_height;
+    private Integer cell_width;
+    private Integer cell_height;
     /* how many cells do we have ? */
-    Integer nb_columns;
-    Integer nb_rows;
-    /* how many cells in a range do we have to possess in order to win ? */
-    Integer aim;
+    private Integer nb_columns;
+    private Integer nb_rows;
     /* what colors will we use ? */
-    Color unknown;
-    Color checked;
-    Color unchecked;
+    private Color unknown;
+    private Color checked;
+    private Color unchecked;
     /* values of the grid */
-    Position state;
-    Cell[][] c;
+    private PositionTicTacToe state;
+    private Cell[][] c;
 
     public Tictactoe(Integer cell_height, Integer cell_width, Color color_first_player, Color color_second_player) {
         Scanner sc = new Scanner(System.in);
