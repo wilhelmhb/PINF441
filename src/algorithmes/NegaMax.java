@@ -1,8 +1,8 @@
 package algorithmes;
 
-public class NegaMax<State, Action, Player> extends Algorithmes<State, Action, Player> implements AlgorithmesSearch<State, Action> {
+public class NegaMax<State, SuperState, Action, Player> extends Algorithmes<State, SuperState, Action, Player> implements AlgorithmesSearch<State, Action> {
 	
-	public NegaMax(Game<State, Action, Player> game) {
+	public NegaMax(Game<State, SuperState, Action, Player> game) {
 		super(game);
 	}
 
@@ -13,7 +13,7 @@ public class NegaMax<State, Action, Player> extends Algorithmes<State, Action, P
 		double resultValue = Double.NEGATIVE_INFINITY;
 		Player player = game.getPlayer(state);
 		for (Action action : game.getActions(state)) {
-			double value = -maxValue(game.getResult(state, action), player);
+			double value = -maxValue((State) game.getResult((SuperState) state, action), player);
 			if (value > resultValue) {
 				result = action;
 				resultValue = value;
@@ -27,7 +27,7 @@ public class NegaMax<State, Action, Player> extends Algorithmes<State, Action, P
 			return game.getUtility(state, player);
 		double value = Double.NEGATIVE_INFINITY;
 		for (Action action : game.getActions(state))
-			value = Math.max(value, -maxValue(game.getResult(state, action), player));
+			value = Math.max(value, -maxValue((State) game.getResult((SuperState) state, action), player));
 		return value;
 	}
 

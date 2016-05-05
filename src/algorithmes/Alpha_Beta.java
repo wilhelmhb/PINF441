@@ -1,8 +1,8 @@
 package algorithmes;
 
-public class Alpha_Beta<State, Action, Player> extends Algorithmes<State, Action, Player> implements AlgorithmesSearch<State, Action> {
+public class Alpha_Beta<State, SuperState, Action, Player> extends Algorithmes<State, SuperState, Action, Player> implements AlgorithmesSearch<State, Action> {
 
-	public Alpha_Beta(Game<State, Action, Player> game) {
+	public Alpha_Beta(Game<State, SuperState, Action, Player> game) {
 		super(game);
 	}
 
@@ -13,7 +13,7 @@ public class Alpha_Beta<State, Action, Player> extends Algorithmes<State, Action
 		double resultValue = Double.NEGATIVE_INFINITY;
 		Player player = game.getPlayer(state);
 		for (Action action : game.getActions(state)) {
-			double value = minValue(game.getResult(state, action), player, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+			double value = minValue((State) game.getResult((SuperState) state, action), player, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 			if (value > resultValue) {
 				result = action;
 				resultValue = value;
@@ -26,7 +26,7 @@ public class Alpha_Beta<State, Action, Player> extends Algorithmes<State, Action
 			return game.getUtility(state, player);
 		double value = Double.NEGATIVE_INFINITY;
 		for (Action action : game.getActions(state)) {
-			value = Math.max(value, minValue(game.getResult(state, action), player, alpha, beta));
+			value = Math.max(value, minValue((State) game.getResult((SuperState) state, action), player, alpha, beta));
 			if (value >= beta)
 				return value;
 			alpha = Math.max(alpha, value);
@@ -38,7 +38,7 @@ public class Alpha_Beta<State, Action, Player> extends Algorithmes<State, Action
 			return game.getUtility(state, player);
 		double value = Double.POSITIVE_INFINITY;
 		for (Action action : game.getActions(state)) {
-			value = Math.min(value, maxValue(game.getResult(state, action), player, alpha, beta));
+			value = Math.min(value, maxValue((State) game.getResult((SuperState) state, action), player, alpha, beta));
 			if (value <= alpha)
 				return value;
 			beta = Math.min(beta, value);

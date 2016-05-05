@@ -2,14 +2,13 @@ package algorithmes;
 
 import java.util.*;
 import structures.Pair;
-import structures.Tuple;
 
-public class Alpha_Beta_memoization<State, Action, Player> extends Algorithmes<State, Action, Player>
+public class Alpha_Beta_memoization<State, SuperState, Action, Player> extends Algorithmes<State, SuperState, Action, Player>
 		implements AlgorithmesSearch<State, Action> {
 
 	Map<State, Pair<Double, Double>> Transposition_Table = new HashMap<State, Pair<Double, Double>>();
 	
-	public Alpha_Beta_memoization(Game<State, Action, Player> game) {
+	public Alpha_Beta_memoization(Game<State, SuperState, Action, Player> game) {
 		super(game);
 	}
 
@@ -20,7 +19,7 @@ public class Alpha_Beta_memoization<State, Action, Player> extends Algorithmes<S
 		double resultValue = Double.NEGATIVE_INFINITY;
 		Player player = game.getPlayer(state);
 		for (Action action : game.getActions(state)) {
-			double value = -maxValue(game.getResult(state, action), player, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+			double value = -maxValue((State) game.getResult((SuperState) state, action), player, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 			if (value > resultValue) {
 				result = action;
 				resultValue = value;
@@ -43,7 +42,7 @@ public class Alpha_Beta_memoization<State, Action, Player> extends Algorithmes<S
 		
 		double value = Double.NEGATIVE_INFINITY;
 		for (Action action : game.getActions(state)) {
-			value = Math.max(value, -maxValue(game.getResult(state, action), player, -beta, -alpha));
+			value = Math.max(value, -maxValue((State) game.getResult((SuperState) state, action), player, -beta, -alpha));
 			alpha = Math.max(alpha, value);
 			if (alpha >= beta)
 				return value;

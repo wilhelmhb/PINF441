@@ -1,8 +1,8 @@
 package algorithmes;
 
-public class MiniMax<State, Action, Player> extends Algorithmes<State, Action, Player> implements AlgorithmesSearch<State, Action> {
+public class MiniMax<State, SuperState, Action, Player> extends Algorithmes<State, SuperState, Action, Player> implements AlgorithmesSearch<State, Action> {
 	
-	public MiniMax (Game<State, Action, Player> game){
+	public MiniMax (Game<State, SuperState, Action, Player> game){
 		super(game);
 	}
 	
@@ -13,7 +13,7 @@ public class MiniMax<State, Action, Player> extends Algorithmes<State, Action, P
 		double resultValue = Double.NEGATIVE_INFINITY;
 		Player player = game.getPlayer(state);
 		for (Action action : game.getActions(state)) {
-			double value = minValue(game.getResult(state, action), player);
+			double value = minValue((State) game.getResult((SuperState) state, action), player);
 			if (value > resultValue) {
 				result = action;
 				resultValue = value;
@@ -27,7 +27,7 @@ public class MiniMax<State, Action, Player> extends Algorithmes<State, Action, P
 			return game.getUtility(state, player);
 		double value = Double.POSITIVE_INFINITY;
 		for (Action action : game.getActions(state))
-			value = Math.min(value,	maxValue(game.getResult(state, action), player));
+			value = Math.min(value,	maxValue((State) game.getResult((SuperState) state, action), player));
 		return value;
 	}
 
@@ -36,7 +36,7 @@ public class MiniMax<State, Action, Player> extends Algorithmes<State, Action, P
 			return game.getUtility(state, player);
 		double value = Double.POSITIVE_INFINITY;
 		for (Action curaction : game.getActions(state))
-			value = Math.min(value,	maxValue(game.getResult(state, curaction), player, curaction));
+			value = Math.min(value,	maxValue((State) game.getResult((SuperState) state, curaction), player, curaction));
 		return value;
 	}
 
@@ -45,7 +45,7 @@ public class MiniMax<State, Action, Player> extends Algorithmes<State, Action, P
 			return game.getUtility(state, player);
 		double value = Double.NEGATIVE_INFINITY;
 		for (Action curaction : game.getActions(state))
-			value = Math.max(value, minValue(game.getResult(state, curaction), player, curaction));
+			value = Math.max(value, minValue((State) game.getResult((SuperState) state, curaction), player, curaction));
 		return value;
 	}
 	
@@ -54,7 +54,7 @@ public class MiniMax<State, Action, Player> extends Algorithmes<State, Action, P
 			return game.getUtility(state, player);
 		double value = Double.NEGATIVE_INFINITY;
 		for (Action action : game.getActions(state))
-			value = Math.max(value, minValue(game.getResult(state, action), player));
+			value = Math.max(value, minValue((State) game.getResult((SuperState) state, action), player));
 		return value;
 	}
 	
