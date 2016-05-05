@@ -2,3 +2,4 @@ out/
 doc/
 *.iml
 .idea/
+*.old
