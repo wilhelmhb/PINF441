@@ -10,11 +10,18 @@ public class Test{
 	public static void main(String[] args) {
 		/*for(int l = 0; l < 10; l++) {
 			testOnceRandomly(l, (int) Math.floor(3 + l * 1.5), (int) Math.floor(3 + l * 2), (int) Math.floor(3));
+			testOnceMiniMax(l, (int) Math.floor(3 + l * 1.5), (int) Math.floor(3 + l * 2), (int) Math.floor(3));
+			testOnceNegaMax(l, (int) Math.floor(3 + l * 1.5), (int) Math.floor(3 + l * 2), (int) Math.floor(3));
+			testOnceAlphaBeta(l, (int) Math.floor(3 + l * 1.5), (int) Math.floor(3 + l * 2), (int) Math.floor(3));
 		}*/
-		testOnceRandomly(1, 3, 3, 3);
+		/*testOnceRandomly(1, 3, 3, 3);
 		testOnceMiniMax(1, 3, 3, 3);
 		testOnceNegaMax(1, 3, 3, 3);
-		testOnceAlphaBeta(1, 3, 3, 3);
+		testOnceAlphaBeta(1, 3, 3, 3);*/
+		testOnceRandomly(1, 4, 3, 3);
+		testOnceMiniMax(1, 4, 3, 3);
+		testOnceNegaMax(1, 4, 3, 3);
+		testOnceAlphaBeta(1, 4, 3, 3);
 		return;
 	}
 	
