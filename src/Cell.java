@@ -60,7 +60,7 @@ public class Cell extends JPanel {
     /**
      * draw a cross in the cell
      * @param c : color of the cross
-     * @param thickness
+     * @param thickness : thickness of the line
      */
     public void makeACross(Color c, int thickness) {
         LOGGER.fine("We are going to put a cross there.");
