@@ -319,4 +319,16 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
     public double getUtility(PositionTicTacToe position, Boolean aBoolean) {
         return position.getUtility();
     }
+
+    public Boolean getCell(Integer column, Integer row) {
+        return state.getCell(column, row);
+    }
+
+    public Boolean[][] getState() {
+        return this.state.getState();
+    }
+
+    public void setCell(Integer column, Integer row, Boolean value) {
+        state.setCell(column, row, value);
+    }
 }
