@@ -1,5 +1,9 @@
 package algorithmes;
 
+import structures.Pair;
+
+import java.util.List;
+
 public class MiniMax<State, SuperState, Action, Player> extends Algorithmes<State, SuperState, Action, Player> implements AlgorithmesSearch<State, Action> {
 	
 	public MiniMax (Game<State, SuperState, Action, Player> game){

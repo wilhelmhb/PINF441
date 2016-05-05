@@ -1,5 +1,9 @@
+import algorithmes.Alpha_Beta;
 import algorithmes.Game;
+import algorithmes.MiniMax;
+import algorithmes.NegaMax;
 import structures.Pair;
+import structures.Tuple;
 
 import javax.swing.JPanel;
 
@@ -36,6 +40,11 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
     private PositionTicTacToe state;
     private Cell[][] c;
 
+    /* algorithms */
+    private MiniMax<PositionTicTacToe, Position, Pair<Integer, Integer>, Boolean> miniMax;
+    private NegaMax<PositionTicTacToe, Position, Pair<Integer, Integer>, Boolean> negaMax;
+    private Alpha_Beta<PositionTicTacToe, Position, Pair<Integer, Integer>, Boolean> alphaBeta;
+
     public Tictactoe(Integer cell_height, Integer cell_width, Color color_first_player, Color color_second_player) {
         Scanner sc = new Scanner(System.in);
         this.nb_columns = sc.nextInt();
@@ -62,6 +71,10 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
         this.checked = color_first_player;
         this.unchecked = color_second_player;
         this.unknown = Color.GRAY;
+        this.miniMax = new MiniMax(this);
+        System.out.println(miniMax.getGame());
+        this.negaMax = new NegaMax<>(this);
+        this.alphaBeta = new Alpha_Beta<>(this);
     }
 
     /**
@@ -87,6 +100,10 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
         this.c = new Cell[nb_columns][nb_rows];
         this.setSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
         generateGraphics();
+        this.miniMax = new MiniMax(this);
+        System.out.println(miniMax.getGame());
+        this.negaMax = new NegaMax<>(this);
+        this.alphaBeta = new Alpha_Beta<>(this);
 
         LOGGER.fine("Tictactoe instancié");
         //this.setPreferredSize(new Dimension(cell_width*(nb_columns + nb_clues_rows),cell_height*(nb_rows)));
@@ -170,8 +187,7 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
      * @param row
      */
     public void move(boolean player, Integer column, Integer row) {
-        this.state.state[column][row] = player;
-        //state.move(column, row);
+        this.state = (PositionTicTacToe) this.getResult(state, new Tuple<>(column, row));
         if(player) {
             c[column][row].changeColor(this.checked);
         }
@@ -188,7 +204,7 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
      * @return true if move is allowed
      */
     public boolean allowedMove(Boolean player, Integer column, Integer row) {
-        if(this.state.getState()[column][row] != null) {
+        if(this.state.getCell(column, row) != null) {
             return false;
         }
         move(player, column, row);
@@ -200,7 +216,7 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
      * @param column
      * @return the index of an empty cell in column column
      */
-    public Integer chooseAllowedRow(Integer column) {
+    public Integer chooseAllowedRowRandomly(Integer column) {
         Integer row = (int) Math.floor(Math.random() * this.nb_rows);
         while(state.getState()[column][row] != null) {
             row = (int) Math.floor(Math.random() * this.nb_rows);
@@ -248,9 +264,9 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
      * @param player
      * @return true if player has won thanks to this move
      */
-    public boolean playOnce(boolean player) {
+    public boolean playOnceRandomly(boolean player) {
         Integer column = chooseNotFullColumn();
-        Integer row = chooseAllowedRow(column);
+        Integer row = chooseAllowedRowRandomly(column);
         LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
         if(!allowedMove(player, column, row)) {
             LOGGER.severe("Tes algos sont pourraves, vieux !");
@@ -261,11 +277,11 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
     /**
      * play randomly a game between two players
      */
-    public void play() {
+    public void playRandomly() {
         boolean player = state.getPlayer();
         for (Integer k = 0; k < nb_columns * nb_rows; k++) {
             LOGGER.finer(k + " coups déjà joués.");
-            if (playOnce(player)) {
+            if (playOnceRandomly(player)) {
                 LOGGER.info("Player " + (player ? 1 : 2) + " won !");
                 return;
             }
@@ -331,4 +347,91 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
     public void setCell(Integer column, Integer row, Boolean value) {
         state.setCell(column, row, value);
     }
+
+    public Pair<Integer, Integer> chooseCellMiniMax() {
+        System.out.println("Tictactoe : chooseCellMiniMax");
+        System.out.println(this.miniMax);
+        return (Tuple) miniMax.makeDecision(state);
+    }
+
+    public boolean playOnceMiniMax(boolean player) {
+        Tuple<Integer, Integer> cell = (Tuple) chooseCellMiniMax();
+        Integer column = cell.getFirst();
+        Integer row = cell.getSecond();
+        LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
+        if(!allowedMove(player, column, row)) {
+            LOGGER.severe("MiniMax est pourrave, vieux !");
+        }
+        return state.isWon(player, column, row);
+    }
+
+    public void playMiniMax() {
+        boolean player = state.getPlayer();
+        for (Integer k = 0; k < nb_columns * nb_rows; k++) {
+            LOGGER.finer(k + " coups déjà joués.");
+            if (playOnceMiniMax(player)) {
+                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
+                return;
+            }
+            player = !player;
+        }
+        LOGGER.info("Match nul !");
+    }
+
+    public Pair<Integer, Integer> chooseCellNegaMax() {
+        return (Tuple) negaMax.makeDecision(state);
+    }
+
+    public boolean playOnceNegaMax(boolean player) {
+        Tuple<Integer, Integer> cell = (Tuple) chooseCellNegaMax();
+        Integer column = cell.getFirst();
+        Integer row = cell.getSecond();
+        LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
+        if(!allowedMove(player, column, row)) {
+            LOGGER.severe("MiniMax est pourrave, vieux !");
+        }
+        return state.isWon(player, column, row);
+    }
+
+    public void playNegaMax() {
+        boolean player = state.getPlayer();
+        for (Integer k = 0; k < nb_columns * nb_rows; k++) {
+            LOGGER.finer(k + " coups déjà joués.");
+            if (playOnceNegaMax(player)) {
+                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
+                return;
+            }
+            player = !player;
+        }
+        LOGGER.info("Match nul !");
+    }
+
+    public Pair<Integer, Integer> chooseCellAlphaBeta() {
+        return (Tuple) alphaBeta.makeDecision(state);
+    }
+
+    public boolean playOnceAlphaBeta(boolean player) {
+        Tuple<Integer, Integer> cell = (Tuple) chooseCellAlphaBeta();
+        Integer column = cell.getFirst();
+        Integer row = cell.getSecond();
+        LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
+        if(!allowedMove(player, column, row)) {
+            LOGGER.severe("MiniMax est pourrave, vieux !");
+        }
+        return state.isWon(player, column, row);
+    }
+
+    public void playAlphaBeta() {
+        boolean player = state.getPlayer();
+        for (Integer k = 0; k < nb_columns * nb_rows; k++) {
+            LOGGER.finer(k + " coups déjà joués.");
+            if (playOnceAlphaBeta(player)) {
+                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
+                return;
+            }
+            player = !player;
+        }
+        LOGGER.info("Match nul !");
+    }
+
 }

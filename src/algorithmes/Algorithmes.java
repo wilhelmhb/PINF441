@@ -8,4 +8,8 @@ public abstract class Algorithmes<State, SuperState, Action, Player> {
 		this.game = game;
 	}
 
+	public Game<State, SuperState, Action, Player> getGame() {
+		return game;
+	}
+
 }

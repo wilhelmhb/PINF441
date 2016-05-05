@@ -81,7 +81,7 @@ public class TictactoeTest {
     @Test
     public void testPlayOnce() {
         Tictactoe p = new Tictactoe(3,3,3);
-        assertFalse("playOnce",p.playOnce(true));
+        assertFalse("playOnce",p.playOnceRandomly(true));
         Boolean[][] a = new Boolean[3][3];
         assertFalse("Result2", equalArrays(p.getState(), a));
     }
@@ -117,7 +117,7 @@ public class TictactoeTest {
         p.setCell(2, 2, false);
         int c = p.chooseNotFullColumn();
         assertFalse("chooseAuthorisedRow.1", p.isColumnFull(c));
-        int r = p.chooseAllowedRow(c);
+        int r = p.chooseAllowedRowRandomly(c);
         assertNull("chooseAuthorisedRow.2", p.getCell(c, r));
     }
 
@@ -135,7 +135,7 @@ public class TictactoeTest {
         int c = p.chooseNotFullColumn();
         LOGGER.info("Choosed column : "+ c);
         assertFalse("chooseAuthorisedRow2.1", p.isColumnFull(c));
-        int r = p.chooseAllowedRow(c);
+        int r = p.chooseAllowedRowRandomly(c);
         LOGGER.info("Choosed cell : "+ c +","+r);
         assertNull("chooseAuthorisedRow2.2", p.getCell(c, r));
     }
@@ -145,7 +145,7 @@ public class TictactoeTest {
         Tictactoe p = new Tictactoe(1,1,1);
         Window f = new Window(p, "Test", 50, 50);
         p.setLevelLogger(Level.FINE);
-        p.play();
+        p.playRandomly();
         //Thread.sleep(10000);
     }
 }
