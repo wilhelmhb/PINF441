@@ -40,18 +40,18 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
         Scanner sc = new Scanner(System.in);
         this.nb_columns = sc.nextInt();
         this.nb_rows = sc.nextInt();
-        this.aim = sc.nextInt();
-        this.state = new Position();
+        Integer aim = sc.nextInt();
+        this.state = new PositionTicTacToe(nb_columns, nb_rows, aim);
         String s;
         for(int i = 0 ; i < nb_rows ; i++) {
             s = sc.nextLine();
             for(int j = 0 ; j < nb_columns ; i++) {
                 switch(s.charAt(j)) {
                     case '0':
-                        state.set(i, j, true);
+                        state.setCell(i, j, true);
                         break;
                     case '@':
-                        state.set(i, j, false);
+                        state.setCell(i, j, false);
                         break;
                     default:
                 }
@@ -83,10 +83,9 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
         this.unknown = Color.GRAY;
         this.checked = color_first_player;
         this.unchecked = color_second_player;
-        this.state = new Position(new Boolean[nb_columns][nb_rows]);
+        this.state = new PositionTicTacToe(new Boolean[nb_columns][nb_rows], aim);
         this.c = new Cell[nb_columns][nb_rows];
         this.setSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
-        this.aim = aim;
         generateGraphics();
 
         LOGGER.fine("Tictactoe instancié");
@@ -241,12 +240,7 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
      * @return true if no piece can be placed any more
      */
     public boolean isTictactoeFull() {
-        for(Integer i = 0 ; i < this.nb_columns ; i++) {
-            if(!isColumnFull(i)) {
-                return false;
-            }
-        }
-        return true;
+        return state.isFull();
     }
 
     /**
@@ -261,151 +255,7 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
         if(!allowedMove(player, column, row)) {
             LOGGER.severe("Tes algos sont pourraves, vieux !");
         }
-        return isWon(player, column, row);
-    }
-
-    /**
-     * test if player won the game thanks to a row
-     * @param player
-     * @param column
-     * @param row
-     * @return true if thanks to a move in cell (column, row), player won thanks to a row
-     */
-    public boolean isWonHorizontally(boolean player, Integer column, Integer row) {
-        Integer count = 1;
-        Integer column_left = column - 1;
-        Integer column_right = column + 1;
-        Boolean[][] a = state.getState();
-        while((column_left >= 0)&&(a[column_left][row] != null)&&(a[column_left][row] == player)) {
-            count++;
-            column_left--;
-        }
-        while((column_right < nb_columns)&&(a[column_right][row] != null)&&(a[column_right][row] == player)) {
-            count++;
-            column_right++;
-        }
-        if(count == this.aim) {
-            LOGGER.info("won horizontally : search for crosses");
-            LOGGER.info(column_left + " : " + column_right);
-            for(Integer i = ++column_left ; i < column_right ; i++) {
-                c[i][row].makeACross();
-                LOGGER.info("made a cross on cell (" + i + "," + row + ")");
-            }
-        }
-        return count == this.aim;
-    }
-
-    /**
-     * test if player won the game thanks to a column
-     * @param player
-     * @param column
-     * @param row
-     * @return true if thanks to a move in cell (column, row), player won thanks to a column
-     */
-    public boolean isWonVertically(boolean player, Integer column, Integer row) {
-        Integer count = 1;
-        Integer row_up = row - 1;
-        Integer row_down = row + 1;
-        Boolean[][] a = state.getState();
-        while((row_up >= 0)&&(a[column][row_up] != null)&&(a[column][row_up] == player)) {
-            count++;
-            row_up--;
-        }
-        while((row_down < nb_rows)&&(a[column][row_down] != null)&&(a[column][row_down] == player)) {
-            count++;
-            row_down++;
-        }
-        if(count == this.aim) {
-            LOGGER.fine("won vertically : search for crosses");
-            for(Integer i = ++row_up ; i < row_down ; i++) {
-                c[column][i].makeACross();
-                LOGGER.fine("made a cross on cell (" + column + "," + i + ")");
-            }
-        }
-        return count == this.aim;
-    }
-
-    /**
-     * test if player won the game thanks to the first bisector
-     * @param player
-     * @param column
-     * @param row
-     * @return true if thanks to a move in cell (column, row), player won thanks to the first bisector
-     */
-    public boolean isWonOnFirstDiag(boolean player, Integer column, Integer row) {
-        Integer count = 1;
-        Integer row_up = row - 1;
-        Integer row_down = row + 1;
-        Integer column_left = column - 1;
-        Integer column_right = column + 1;
-        Boolean[][] a = state.getState();
-        while((row_up >=0)&&(column_right < nb_columns)&&(a[column_right][row_up] != null)&&(a[column_right][row_up] == player)) {
-            count++;
-            row_up--;
-            column_right++;
-        }
-        while((row_down < nb_rows)&&(column_left >= 0)&&(a[column_left][row_down] != null)&&(a[column_left][row_down] == player)) {
-            count++;
-            row_down++;
-            column_left--;
-        }
-        if(count == this.aim) {
-            LOGGER.fine("won on first bisector : search for crosses");
-            column_right--;
-            for(Integer i = ++row_up ; i < row_down ; i++) {
-                c[column_right][i].makeACross();
-                LOGGER.fine("made a cross on cell (" + column_right + "," + i + ")");
-                column_right--;
-            }
-        }
-        return count == this.aim;
-    }
-
-    /**
-     * test if player won the game thanks to a second bisector
-     * @param player
-     * @param column
-     * @param row
-     * @return true if thanks to a move in cell (column, row), player won thanks to the second bisector
-     */
-    public boolean isWonOnSecondDiag(boolean player, Integer column, Integer row) {
-        Integer count = 1;
-        Integer row_up = row - 1;
-        Integer row_down = row + 1;
-        Integer column_left = column - 1;
-        Integer column_right = column + 1;
-        Boolean[][] a = state.getState();
-        while((row_down < nb_rows)&&(column_right < nb_columns)&&(a[column_right][row_down] != null)&&(a[column_right][row_down] == player)) {
-            count++;
-            row_down++;
-            column_right++;
-        }
-        while((row_up >= 0)&&(column_left >= 0)&&(a[column_left][row_up] != null)&&(a[column_left][row_up] == player)) {
-            count++;
-            row_up--;
-            column_left--;
-        }
-        if(count == this.aim) {
-            LOGGER.fine("won on second bisector : search for crosses");
-            column_left++;
-            for(Integer i = ++row_up ; i < row_down ; i++) {
-                c[column_left][i].makeACross();
-                LOGGER.fine("made a cross on cell (" + column_left + "," + i + ")");
-                column_left++;
-            }
-        }
-        return count == this.aim;
-    }
-
-    /**
-     * test if player won
-     * @param player
-     * @param column
-     * @param row
-     * @return true if player won thanks to a piece in cell (column, row)
-     */
-    public boolean isWon(boolean player, Integer column, Integer row) {
-        return isWonHorizontally(player, column, row)||isWonVertically(player, column, row)||isWonOnFirstDiag(player, column, row)||isWonOnSecondDiag(player, column, row);
+        return state.isWon(player, column, row);
     }
 
     /**
@@ -435,48 +285,38 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
     }
 
     @Override
-    public Position getInitialState() {
+    public PositionTicTacToe getInitialState() {
         return this.state;
     }
 
     @Override
-    public Boolean getPlayer(Position position) {
+    public Boolean getPlayer(PositionTicTacToe position) {
         return position.getPlayer();
     }
 
     @Override
-    public List<Pair<Integer, Integer>> getActions(Position position) {
-        return null;
+    public List<Pair<Integer, Integer>> getActions(PositionTicTacToe position) {
+        return (position.getActions());
     }
 
     @Override
-    public Position getResult(Position position, Pair<Integer, Integer> integerIntegerPair) {
-        return position.getResult(position, integerIntegerPair);
+    public Position getResult(Position state, Pair<Integer, Integer> action) {
+        return this.state.getResult(state, action);
     }
 
     @Override
-    public boolean isTerminal(Position position, Pair<Integer, Integer> integerIntegerPair) {
-        if(position.isFull()) {
-            LOGGER.info("La grille est pleine.");
-            return true;
-        }
-        return isWon(!position.getPlayer(), integerIntegerPair.getFirst(), integerIntegerPair.getSecond());
+    public boolean isTerminal(PositionTicTacToe position) {
+        return position.isTerminal();
     }
 
     @Override
-    public boolean isTerminal(Position position) {
-        for(int i = 0 ; i < position.getState().length ; i++) {
-            for(int j = 0 ; j < position.getState()[0].length ; j++) {
-                if(isWon(position.getCell(i,j), i, j)) {
-                    return true;
-                }
-            }
-        }
-        return isTictactoeFull();
+    public boolean isTerminal(PositionTicTacToe positionTicTacToe, Pair<Integer, Integer> integerIntegerPair) {
+        PositionTicTacToe p = (PositionTicTacToe) getResult(positionTicTacToe, integerIntegerPair);
+        return p.isTerminal();
     }
 
     @Override
-    public double getUtility(Position position, Boolean aBoolean) {
-        return 0;
+    public double getUtility(PositionTicTacToe position, Boolean aBoolean) {
+        return position.getUtility();
     }
 }
