@@ -8,11 +8,13 @@ interface PositionInterface<Action> {
 
     Boolean[][] getState();
 
-    Integer getCells_left();
+    Integer getCellsLeft();
 
     boolean isFull();
 
-    //Boolean getCell(Integer column, Integer row);
+    Boolean getCell(Integer column, Integer row);
+
+    boolean setCell(Integer column, Integer row, Boolean value);
 
     Integer getUtility();
 
