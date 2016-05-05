@@ -1,7 +1,3 @@
-import algorithmes.Alpha_Beta;
-import algorithmes.Game;
-import algorithmes.MiniMax;
-import algorithmes.NegaMax;
 import structures.Pair;
 import structures.Tuple;
 
@@ -72,7 +68,6 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
         this.unchecked = color_second_player;
         this.unknown = Color.GRAY;
         this.miniMax = new MiniMax(this);
-        System.out.println(miniMax.getGame());
         this.negaMax = new NegaMax<>(this);
         this.alphaBeta = new Alpha_Beta<>(this);
     }
@@ -101,7 +96,6 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
         this.setSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
         generateGraphics();
         this.miniMax = new MiniMax(this);
-        System.out.println(miniMax.getGame());
         this.negaMax = new NegaMax<>(this);
         this.alphaBeta = new Alpha_Beta<>(this);
 
@@ -349,8 +343,6 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
     }
 
     public Pair<Integer, Integer> chooseCellMiniMax() {
-        System.out.println("Tictactoe : chooseCellMiniMax");
-        System.out.println(this.miniMax);
         return (Tuple) miniMax.makeDecision(state);
     }
 
