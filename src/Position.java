@@ -238,4 +238,13 @@ public abstract class Position<Action> implements PositionInterface<Action> {
     }
 
     abstract List<Action> getActions();
+
+    public void print() {
+        for(int i = 0 ; i < state[0].length ; i++) {
+            for(int j = 0 ; j < state.length ; j++) {
+                System.out.print((getCell(j,i) != null) ? (getCell(j,i) ? "0" : "@"): ".");
+            }
+            System.out.println();
+        }
+    }
 }
