@@ -1,4 +1,5 @@
-import structures.Pair;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by wilhelm on 05/05/16.
@@ -12,6 +13,14 @@ public class PositionConnect4 extends Position<Integer> {
 
     public PositionConnect4(Boolean[][] state, Boolean player, Integer utility, Integer cells_left, Integer aim) {
         super(state, player, utility, cells_left, aim);
+    }
+
+    public PositionConnect4(Integer nb_columns, Integer nb_rows, Integer aim) {
+        super(new Boolean[nb_columns][nb_rows], aim);
+    }
+
+    public boolean isColumnFull(Integer column) {
+        return state[column][0] != null;
     }
 
     @Override
@@ -48,5 +57,16 @@ public class PositionConnect4 extends Position<Integer> {
             }
         }
         return false;
+    }
+
+    @Override
+    List<Integer> getActions() {
+        LinkedList l = new LinkedList();
+        for(int i = 0 ; i < state.length ; i++) {
+            if(isColumnFull(i)) {
+                    l.add(i);
+            }
+        }
+        return l;
     }
 }
