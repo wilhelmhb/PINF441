@@ -14,7 +14,7 @@ public class TictactoeTest {
         p.move(true, 1, 1);
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = true;
-        assertTrue(p.state.state[1][1]);
+        assertTrue(p.getCell(1, 1));
 	}
 
     public static boolean equalArrays(Boolean[][] i, Boolean[][] j) {
@@ -38,7 +38,7 @@ public class TictactoeTest {
         p.move(true, 1, 1);
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = true;
-        assertTrue(equalArrays(p.state.state,a));
+        assertTrue(equalArrays(p.getState(),a));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class TictactoeTest {
         p.move(false, 1, 1);
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = false;
-        assertTrue(equalArrays(p.state.state,a));
+        assertTrue(equalArrays(p.getState(),a));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class TictactoeTest {
         p.move(false, 0, 1);
         Boolean[][] a = new Boolean[3][3];
         a[0][1] = false;
-        assertTrue(equalArrays(p.state.state,a));
+        assertTrue(equalArrays(p.getState(),a));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class TictactoeTest {
         assertTrue("AllowedMove",p.allowedMove(true, 1, 1));
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = true;
-        assertTrue("Result", equalArrays(p.state.state,a));
+        assertTrue("Result", equalArrays(p.getState(),a));
     }
 
     @Test
@@ -75,7 +75,7 @@ public class TictactoeTest {
         Boolean[][] a = new Boolean[3][3];
         a[1][1] = true;
         assertFalse("AllowedMove2.2",p.allowedMove(false, 1, 1));
-        assertTrue("Result2", equalArrays(p.state.state,a));
+        assertTrue("Result2", equalArrays(p.getState(),a));
     }
 
     @Test
@@ -83,16 +83,16 @@ public class TictactoeTest {
         Tictactoe p = new Tictactoe(3,3,3);
         assertFalse("playOnce",p.playOnce(true));
         Boolean[][] a = new Boolean[3][3];
-        assertFalse("Result2", equalArrays(p.state.state,a));
+        assertFalse("Result2", equalArrays(p.getState(), a));
     }
 
     @Test
     public void testIsFullColumn() {
         Tictactoe p = new Tictactoe(3,3,3);
-        p.state.state[0][0] = true;
+        p.setCell(0, 0, true);
         assertFalse("isFullColumn.1", p.isColumnFull(0));
-        p.state.state[0][1] = false;
-        p.state.state[0][2] = true;
+        p.setCell(0, 1, false);
+        p.setCell(0, 2, true);
         assertTrue("isFullColumn.2", p.isColumnFull(0));
     }
 
@@ -109,25 +109,35 @@ public class TictactoeTest {
     @Test
     public void testChooseAuthorisedRow() {
         Tictactoe p = new Tictactoe(3,3,3);
-        p.state.state[0][1] = p.state.state[0][2] = p.state.state[1][1] = true;
-        p.state.state[2][1] = p.state.state[2][2] = p.state.state[1][0] = false;
+        p.setCell(0, 1, true);
+        p.setCell(0, 2, true);
+        p.setCell(2, 1, false);
+        p.setCell(1, 1, true);
+        p.setCell(1, 0, false);
+        p.setCell(2, 2, false);
         int c = p.chooseNotFullColumn();
         assertFalse("chooseAuthorisedRow.1", p.isColumnFull(c));
         int r = p.chooseAllowedRow(c);
-        assertNull("chooseAuthorisedRow.2", p.state.state[c][r]);
+        assertNull("chooseAuthorisedRow.2", p.getCell(c, r));
     }
 
     @Test
     public void testChooseAuthorisedRow2() {
         Tictactoe p = new Tictactoe(3,3,3);
-        p.state.state[0][1] = p.state.state[0][2] = p.state.state[1][1] = p.state.state[0][0] = true;
-        p.state.state[2][1] = p.state.state[2][2] = p.state.state[1][0] = p.state.state[1][2] = false;
+        p.setCell(0, 1, true);
+        p.setCell(0, 2, true);
+        p.setCell(2, 1, false);
+        p.setCell(1, 1, true);
+        p.setCell(1, 0, false);
+        p.setCell(2, 2, false);
+        p.setCell(0, 0, true);
+        p.setCell(1, 2, false);
         int c = p.chooseNotFullColumn();
         LOGGER.info("Choosed column : "+ c);
         assertFalse("chooseAuthorisedRow2.1", p.isColumnFull(c));
         int r = p.chooseAllowedRow(c);
         LOGGER.info("Choosed cell : "+ c +","+r);
-        assertNull("chooseAuthorisedRow2.2", p.state.state[c][r]);
+        assertNull("chooseAuthorisedRow2.2", p.getCell(c, r));
     }
 
     @Test
