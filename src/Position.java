@@ -1,6 +1,8 @@
 import structures.Pair;
 import structures.Tuple;
 
+import java.util.List;
+
 /**
  * Created by wilhelm on 03/05/16.
  */
@@ -48,8 +50,8 @@ public abstract class Position<Action> implements PositionInterface<Action> {
         int i = 0;
         for(int k = 0; k < state.length ; k++) {
             for(int j = 0 ; j < state[0].length ; j++) {
-                if(state[k][j] != null) {
-                    if(state[k][j]) {
+                if(getCell(k, j) != null) {
+                    if(getCell(k, j)) {
                         i++;
                         if(isWon(true, k, j)) {
                             utility = 1;
@@ -70,12 +72,12 @@ public abstract class Position<Action> implements PositionInterface<Action> {
         return new Tuple(new Tuple(utility, cells_left), i);
     }
 
-    public Integer getCells_left() {
+    public Integer getCellsLeft() {
         return this.cells_left;
     }
 
     public boolean isFull(){
-        return this.cells_left == 0;
+        return getCellsLeft() == 0;
     }
 
     public Integer getUtility() {
@@ -121,11 +123,11 @@ public abstract class Position<Action> implements PositionInterface<Action> {
         Integer count = 1;
         Integer column_left = column - 1;
         Integer column_right = column + 1;
-        while((column_left >= 0)&&(state[column_left][row] != null)&&(state[column_left][row] == player)) {
+        while((column_left >= 0)&&(getCell(column_left, row) != null)&&(getCell(column_left, row) == player)) {
             count++;
             column_left--;
         }
-        while((column_right < state.length)&&(state[column_right][row] != null)&&(state[column_right][row] == player)) {
+        while((column_right < state.length)&&(getCell(column_right, row) != null)&&(getCell(column_right, row) == player)) {
             count++;
             column_right++;
         }
@@ -143,11 +145,11 @@ public abstract class Position<Action> implements PositionInterface<Action> {
         Integer count = 1;
         Integer row_up = row - 1;
         Integer row_down = row + 1;
-        while((row_up >= 0)&&(state[column][row_up] != null)&&(state[column][row_up] == player)) {
+        while((row_up >= 0)&&(getCell(column, row_up) != null)&&(getCell(column, row_up) == player)) {
             count++;
             row_up--;
         }
-        while((row_down < state[0].length)&&(state[column][row_down] != null)&&(state[column][row_down] == player)) {
+        while((row_down < state[0].length)&&(getCell(column, row_down) != null)&&(getCell(column, row_down) == player)) {
             count++;
             row_down++;
         }
@@ -167,12 +169,12 @@ public abstract class Position<Action> implements PositionInterface<Action> {
         Integer row_down = row + 1;
         Integer column_left = column - 1;
         Integer column_right = column + 1;
-        while((row_up >=0)&&(column_right < state.length)&&(state[column_right][row_up] != null)&&(state[column_right][row_up] == player)) {
+        while((row_up >=0)&&(column_right < state.length)&&(getCell(column_right, row_up) != null)&&(getCell(column_right, row_up) == player)) {
             count++;
             row_up--;
             column_right++;
         }
-        while((row_down < state[0].length)&&(column_left >= 0)&&(state[column_left][row_down] != null)&&(state[column_left][row_down] == player)) {
+        while((row_down < state[0].length)&&(column_left >= 0)&&(getCell(column_left, row_down) != null)&&(getCell(column_left, row_down) == player)) {
             count++;
             row_down++;
             column_left--;
@@ -193,12 +195,12 @@ public abstract class Position<Action> implements PositionInterface<Action> {
         Integer row_down = row + 1;
         Integer column_left = column - 1;
         Integer column_right = column + 1;
-        while((row_down < state[0].length)&&(column_right < state.length)&&(state[column_right][row_down] != null)&&(state[column_right][row_down] == player)) {
+        while((row_down < state[0].length)&&(column_right < state.length)&&(getCell(column_right, row_down) != null)&&(getCell(column_right, row_down) == player)) {
             count++;
             row_down++;
             column_right++;
         }
-        while((row_up >= 0)&&(column_left >= 0)&&(state[column_left][row_up] != null)&&(state[column_left][row_up] == player)) {
+        while((row_up >= 0)&&(column_left >= 0)&&(getCell(column_left, row_up) != null)&&(getCell(column_left, row_up) == player)) {
             count++;
             row_up--;
             column_left--;
@@ -220,4 +222,20 @@ public abstract class Position<Action> implements PositionInterface<Action> {
     public boolean isTerminal() {
         return isFull()||(utility!=0);
     }
+
+    public Boolean getCell(Integer column, Integer row) {
+        return state[column][row];
+    }
+
+    public boolean setCell(Integer column, Integer row, Boolean value) {
+        if(this.getCell(column, row) != null) {
+            return false;
+        }
+        else {
+            state[column][row] = value;
+            return true;
+        }
+    }
+
+    abstract List<Action> getActions();
 }
