@@ -30,7 +30,7 @@ public class PositionConnect4 extends Position<Integer> {
         }
         Integer column = action;
         int i = 0;
-        while(position.state[column][i] == null) {
+        while((i < state[0].length) &&(position.state[column][i] == null)) {
             i++;
         }
         i--;
@@ -39,7 +39,7 @@ public class PositionConnect4 extends Position<Integer> {
             return null;
         }
         //make a move
-        Boolean[][] state = position.state.clone();
+        Boolean[][] state = position.cloneState();
         state[column][i] = position.player;
         Position p = new PositionConnect4(state, !position.player, position.utility, position.cells_left - 1, position.aim);
         if(p.isWon(position.player, column, i)) {
@@ -52,17 +52,17 @@ public class PositionConnect4 extends Position<Integer> {
     public boolean isFull() {
         for(int i = 0 ; i < state.length ; i++) {
             if(state[i][0] == null) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     @Override
     List<Integer> getActions() {
         LinkedList l = new LinkedList();
         for(int i = 0 ; i < state.length ; i++) {
-            if(isColumnFull(i)) {
+            if(!isColumnFull(i)) {
                     l.add(i);
             }
         }

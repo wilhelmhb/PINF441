@@ -40,4 +40,9 @@ public class Tuple<First, Second> implements Pair<First, Second> {
 		this.second = second;
 	}
 
+	@Override
+	public String toString() {
+		return "(" + first + ", " + second + ")";
+	}
+
 }

@@ -49,7 +49,8 @@ public class PositionTicTacToe extends Position<Pair<Integer, Integer>> {
         LinkedList l = new LinkedList();
         for(int i = 0 ; i < state.length ; i++) {
             for(int j = 0 ; j < state[0].length ; j++) {
-                if(getCell(i, j) == null) {
+                if(this.getCell(i, j) == null) {
+                    //System.out.println(i + "," + j);
                     l.add(new Tuple<>(i, j));
                 }
             }

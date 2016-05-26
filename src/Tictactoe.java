@@ -327,7 +327,7 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
 
     @Override
     public double getUtility(PositionTicTacToe position, Boolean aBoolean) {
-        return position.getUtility();
+        return aBoolean ? position.getUtility() : -position.getUtility();
     }
 
     public Boolean getCell(Integer column, Integer row) {
@@ -343,17 +343,22 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
     }
 
     public Pair<Integer, Integer> chooseCellMiniMax() {
-        return (Tuple) miniMax.makeDecision(state);
+        return miniMax.makeDecision(state);
     }
 
     public boolean playOnceMiniMax(boolean player) {
-        Tuple<Integer, Integer> cell = (Tuple) chooseCellMiniMax();
+        Pair<Integer, Integer> cell = chooseCellMiniMax();
         Integer column = cell.getFirst();
         Integer row = cell.getSecond();
         LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
         if(!allowedMove(player, column, row)) {
             LOGGER.severe("MiniMax est pourrave, vieux !");
-        }
+        }/*
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }*/
         return state.isWon(player, column, row);
     }
 
