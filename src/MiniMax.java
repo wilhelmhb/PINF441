@@ -16,6 +16,7 @@ public class MiniMax<State, SuperState, Action, Player> extends Algorithmes<Stat
 		double resultValue = Double.NEGATIVE_INFINITY;
 		Player player = game.getPlayer(state);
 		List<Action> l = game.getActions(state);
+		System.out.println(l.toString());
 		for (Action action : l) {
 			double value = minValue((State) game.getResult((SuperState) state, action), player);
 			if (value > resultValue) {
@@ -23,6 +24,7 @@ public class MiniMax<State, SuperState, Action, Player> extends Algorithmes<Stat
 				resultValue = value;
 			}
 		}
+		System.out.println("Utility : " + resultValue);
 		return result;
 	}
 	

@@ -11,7 +11,7 @@ public class NegaMax<State, SuperState, Action, Player> extends Algorithmes<Stat
 		double resultValue = Double.NEGATIVE_INFINITY;
 		Player player = game.getPlayer(state);
 		for (Action action : game.getActions(state)) {
-			double value = -maxValue((State) game.getResult((SuperState) state, action), player);
+			double value = maxValue((State) game.getResult((SuperState) state, action), player);
 			if (value > resultValue) {
 				result = action;
 				resultValue = value;
@@ -19,13 +19,20 @@ public class NegaMax<State, SuperState, Action, Player> extends Algorithmes<Stat
 		}
 		return result;
 	}
-	
+
+	/**
+	 * compute the utility of the state for the player
+	 * @param state
+	 * @param player
+     * @return
+     */
 	public double maxValue(State state, Player player) { 
 		if (game.isTerminal(state))
 			return game.getUtility(state, player);
 		double value = Double.NEGATIVE_INFINITY;
-		for (Action action : game.getActions(state))
-			value = Math.max(value, -maxValue((State) game.getResult((SuperState) state, action), player));
+		for (Action action : game.getActions(state)) {
+			value = Math.max(value, maxValue((State) game.getResult((SuperState) state, action), player));
+		}
 		return value;
 	}
 

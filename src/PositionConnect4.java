@@ -6,7 +6,6 @@ import java.util.List;
  */
 public class PositionConnect4 extends Position<Integer> {
 
-
     public PositionConnect4(Boolean[][] state, Integer aim) {
         super(state, aim);
     }
