@@ -172,7 +172,7 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
      */
     public Integer move(boolean player, Integer column) {
         int i = 0;
-        while(state.getCell(column, i) == null) {
+        while((i < nb_rows) && (state.getCell(column, i) == null)) {
             i++;
         }
         i--;
@@ -181,6 +181,12 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
             return null;
         }
         state.setCell(column, i, player);
+        if(player) {
+            c[column][i].changeColor(this.checked);
+        }
+        else {
+            c[column][i].changeColor(this.unchecked);
+        }
         return i;
     }
 
@@ -237,6 +243,7 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
     public boolean playOnce(boolean player) {
         Integer column = chooseNotFullColumn();
         Integer row;
+        System.out.println("Column : " + column);
         if((row = allowedMove(player, column)) == null) {
             LOGGER.severe("Tes algos sont pourraves, vieux !");
         }
@@ -302,7 +309,7 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
 
     @Override
     public double getUtility(PositionConnect4 position, Boolean aBoolean) {
-        return position.getUtility();
+        return aBoolean ? position.getUtility() : -position.getUtility();
     }
 
     public Boolean getCell(Integer column, Integer row) {
