@@ -27,6 +27,11 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
     private PositionConnect4 state;
     private Cell[][] c;
 
+    /* algorithms */
+    private MiniMax<PositionConnect4, Position, Integer, Boolean> miniMax;
+    private NegaMax<PositionConnect4, Position, Integer, Boolean> negaMax;
+    private Alpha_Beta<PositionConnect4, Position, Integer, Boolean> alphaBeta;
+
     public Connect4(Integer cell_height, Integer cell_width, Color color_first_player, Color color_second_player) {
         Scanner sc = new Scanner(System.in);
         this.nb_columns = sc.nextInt();
@@ -53,6 +58,9 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
         this.checked = color_first_player;
         this.unchecked = color_second_player;
         this.unknown = Color.GRAY;
+        this.miniMax = new MiniMax(this);
+        this.negaMax = new NegaMax<>(this);
+        this.alphaBeta = new Alpha_Beta<>(this);
     }
 
     /**
@@ -78,6 +86,9 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
         this.c = new Cell[nb_columns][nb_rows];
         this.setSize(new Dimension(this.cell_height * this.nb_rows, this.cell_width * this.nb_columns));
         generateGraphics();
+        this.miniMax = new MiniMax(this);
+        this.negaMax = new NegaMax<>(this);
+        this.alphaBeta = new Alpha_Beta<>(this);
 
         LOGGER.fine("Tictactoe instancié");
         //this.setPreferredSize(new Dimension(cell_width*(nb_columns + nb_clues_rows),cell_height*(nb_rows)));
@@ -292,5 +303,107 @@ public class Connect4 extends JPanel implements Game<PositionConnect4, Position,
     @Override
     public double getUtility(PositionConnect4 position, Boolean aBoolean) {
         return position.getUtility();
+    }
+
+    public Boolean getCell(Integer column, Integer row) {
+        return state.getCell(column, row);
+    }
+
+    public Boolean[][] getState() {
+        return this.state.getState();
+    }
+
+    public void setCell(Integer column, Integer row, Boolean value) {
+        state.setCell(column, row, value);
+    }
+
+    public Integer chooseColumnMiniMax() {
+        return miniMax.makeDecision(state);
+    }
+
+    public boolean playOnceMiniMax(boolean player) {
+        Integer column = chooseColumnMiniMax();
+        System.out.println("selected column : "+ column);
+        Integer played;
+        if((played = allowedMove(player, column)) == null) {
+            LOGGER.severe("MiniMax est pourrave, vieux !");
+        }
+        /*try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }*/
+        return state.isWon(player, column, played);
+    }
+
+    public void playMiniMax() {
+        boolean player = state.getPlayer();
+        for (Integer k = 0; k < nb_columns * nb_rows; k++) {
+            LOGGER.finer(k + " coups déjà joués.");
+            if (playOnceMiniMax(player)) {
+                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
+                return;
+            }
+            player = !player;
+        }
+        LOGGER.info("Match nul !");
+    }
+
+    public Integer chooseColumnNegaMax() {
+        return negaMax.makeDecision(state);
+    }
+
+    public boolean playOnceNegaMax(boolean player) {
+        Integer column = chooseColumnNegaMax();
+        LOGGER.finest("selected column : "+ column);
+        Integer played;
+        if((played = allowedMove(player, column)) == null) {
+            LOGGER.severe("MiniMax est pourrave, vieux !");
+        }
+        return state.isWon(player, column, played);
+    }
+
+    public void playNegaMax() {
+        boolean player = state.getPlayer();
+        for (Integer k = 0; k < nb_columns * nb_rows; k++) {
+            LOGGER.finer(k + " coups déjà joués.");
+            if (playOnceNegaMax(player)) {
+                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
+                return;
+            }
+            player = !player;
+        }
+        LOGGER.info("Match nul !");
+    }
+
+    public Integer chooseColumnAlphaBeta() {
+        return alphaBeta.makeDecision(state);
+    }
+
+    public boolean playOnceAlphaBeta(boolean player) {
+        Integer column = chooseColumnAlphaBeta();
+        LOGGER.finest("selected column : "+ column);
+        System.out.println("Column : " + column);
+        Integer played;
+        if((played = allowedMove(player, column)) == null) {
+            LOGGER.severe("MiniMax est pourrave, vieux !");
+        }
+        return state.isWon(player, column, played);
+    }
+
+    public void playAlphaBeta() {
+        boolean player = state.getPlayer();
+        while (!state.isFull()) {
+            if (playOnceAlphaBeta(player)) {
+                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
+                return;
+            }
+            player = !player;
+        }
+        LOGGER.info("Match nul !");
+    }
+
+    public void setPlayer(boolean player) {
+        state.player = player;
     }
 }
