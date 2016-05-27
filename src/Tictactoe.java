@@ -72,6 +72,10 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
         this.alphaBeta = new Alpha_Beta<>(this);
     }
 
+    public Tictactoe() {
+        this(50, 50, Color.black, Color.white);
+    }
+
     /**
      * instantiate a Tictactoe given the size, aim, dimensions and colors for the players
      * @param height
@@ -429,6 +433,10 @@ public class Tictactoe extends JPanel implements Game<PositionTicTacToe, Positio
             player = !player;
         }
         LOGGER.info("Match nul !");
+    }
+
+    public Boolean decide() {
+        return alphaBeta.decide(state);
     }
 
 }
