@@ -71,7 +71,9 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
     }
 
     public boolean changeHorizontally(boolean player, Integer column, Integer row) {
-        return changeLeft(player, column, row) || changeRight(player, column, row);
+        boolean b1 = changeLeft(player, column, row);
+        boolean b2 = changeRight(player, column, row);
+        return b1 || b2;
     }
 
     public boolean changeUp(boolean player, Integer column, Integer row) {
@@ -97,13 +99,15 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
             for(int i = row_down ; i > row; i--) {
                 setCell(column, i, player);
             }
-            return (row != (row_down + 1));
+            return (row != (row_down - 1));
         }
         return false;
     }
 
     public boolean changeVertically(boolean player, Integer column, Integer row) {
-        return changeUp(player, column, row) || changeDown(player, column, row);
+        boolean b1 = changeUp(player, column, row);
+        boolean b2 = changeDown(player, column, row);
+        return b1 || b2;
     }
 
     /**
@@ -150,7 +154,9 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
     }
 
     public boolean changeFirstDiag(boolean player, Integer column, Integer row) {
-        return changeFirstDiagUp(player, column, row) || changeFirstDiagDown(player, column, row);
+        boolean b1 = changeFirstDiagUp(player, column, row);
+        boolean b2 = changeFirstDiagDown(player, column, row);
+        return b1 || b2;
     }
 
     public boolean changeSecondDiagUp(boolean player, Integer column, Integer row) {
@@ -190,7 +196,9 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
     }
 
     public boolean changeSecondDiag(boolean player, Integer column, Integer row) {
-        return changeSecondDiagUp(player, column, row) || changeSecondDiagDown(player, column, row);
+        boolean b1 = changeSecondDiagUp(player, column, row);
+        boolean b2 = changeSecondDiagDown(player, column, row);
+        return b1 || b2;
     }
 
     /**
@@ -201,7 +209,11 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
      * @return true if player won thanks to a piece in cell (column, row)
      */
     public boolean change(boolean player, Integer column, Integer row) {
-        return changeHorizontally(player, column, row) || changeVertically(player, column, row) || changeFirstDiag(player, column, row) || changeSecondDiag(player, column, row);
+        boolean b1 = changeHorizontally(player, column, row);
+        boolean b2 = changeVertically(player, column, row);
+        boolean b3 = changeFirstDiag(player, column, row);
+        boolean b4 = changeSecondDiag(player, column, row);
+        return (b1||b2||b3 || b4);
     }
 
     @Override
@@ -219,10 +231,11 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
         //make a move
         Boolean[][] state = position.cloneState();
         state[column][row] = position.player;
-        change(player, column, row);
-        Position p = new PositionOthello(state, !position.player, position.utility, position.cells_left - 1);
-        if(p.isWon(position.player, column, row)) {
-            p.utility = position.player ? 1 : -1;
+        PositionOthello p = new PositionOthello(state, !position.player, position.utility, position.cells_left - 1);
+        p.change(player, column, row);
+        if(p.isTerminal()) {
+            Boolean b = isWon();
+            p.utility = b == null ? 0 : b ? 1 : -1;
         }
         return p;
     }
@@ -306,4 +319,17 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
         System.out.println("Actions : " + getActions());*/
         return isFull() || (getActions().size() == 0);
     }
+
+    public Boolean isWon() {
+        int i = 0;
+        for(int column = 0 ; column < state.length ; column++) {
+            for (int row = 0; row < state[0].length; row++) {
+                if (getCell(column, row) != null) {
+                    i += getCell(column, row) ? 1 : -1;
+                }
+            }
+        }
+        return i == 0 ? null : (i > 0);
+    }
+
 }
