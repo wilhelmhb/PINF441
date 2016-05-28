@@ -42,11 +42,21 @@ public class Test{
 		p.setLevelLogger(Level.FINE);
 		p.playRandomly();
 		try {Thread.sleep(1000);}catch(Exception e){}*/
-		Connect4 c = new Connect4(i, j, k, 50, 50, Color.BLUE, Color.GREEN);
+		/*Connect4 c = new Connect4(i, j, k, 50, 50, Color.BLUE, Color.GREEN);
 		Window w = new Window(c, "Connect4" + l + ", dimensions : (" + i + "x" + j + "), but : " + k, j * (50 + 10), i * (50 + 10));
 		c.setLevelLogger(Level.FINE);
 		c.play();
-		try {Thread.sleep(1000);}catch(Exception e){}
+		try {Thread.sleep(1000);}catch(Exception e){}*/
+		Othello o = new Othello(i+2, j+2, 50, 50, Color.BLUE, Color.GREEN);
+		int row = j/2 +1;
+		int column = i/2 +1;
+		o.setCell(column, row, true);
+		o.setCell(column, row+1, false);
+		o.setCell(column+1, row, false);
+		o.setCell(column+1, row+1, true);
+		Window wo = new Window(o, "Test" + l + ", dimensions : (" + i + "x" + j + "), but : " + k, j * (50 + 10), i * (50 + 10));
+		o.setLevelLogger(Level.FINE);
+		o.playRandomly();
 		return;
 	}
 
@@ -56,11 +66,21 @@ public class Test{
 		p.setLevelLogger(Level.FINE);
 		p.playMiniMax();
 		try {Thread.sleep(1000);}catch(Exception e){}*/
-		Connect4 c = new Connect4(i, j, k, 50, 50, Color.BLUE, Color.GREEN);
+		/*Connect4 c = new Connect4(i, j, k, 50, 50, Color.BLUE, Color.GREEN);
 		Window w = new Window(c, "Connect4" + l + ", dimensions : (" + i + "x" + j + "), but : " + k, j * (50 + 10), i * (50 + 10));
 		c.setLevelLogger(Level.FINE);
 		c.playMiniMax();
-		try {Thread.sleep(1000);}catch(Exception e){}
+		try {Thread.sleep(1000);}catch(Exception e){}*/
+		Othello o = new Othello(i+2, j+2, 50, 50, Color.BLUE, Color.GREEN);
+		int row = j/2 +1;
+		int column = i/2 +1;
+		o.setCell(column, row, true);
+		o.setCell(column, row+1, false);
+		o.setCell(column+1, row, false);
+		o.setCell(column+1, row+1, true);
+		Window wo = new Window(o, "Test" + l + ", dimensions : (" + i + "x" + j + "), but : " + k, j * (50 + 10), i * (50 + 10));
+		o.setLevelLogger(Level.FINE);
+		o.playMiniMax();
 		return;
 	}
 

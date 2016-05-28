@@ -267,25 +267,24 @@ public class Othello extends JPanel implements Game<PositionOthello, Position, P
         LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
         if(!allowedMove(player, column, row)) {
             LOGGER.severe("L'algo est pourrave, vieux !");
-        }/*
-        try {
-            Thread.sleep(5000);
-        } catch (Exception e) {
-
-        }*/
-        return state.isWon(player, column, row);
+        }
+        return state.isTerminal();
     }
 
     public void playRandomly() {
         boolean player = state.getPlayer();
-        while(!isTerminal(state)) {
-            if (playOnceRandomly(player)) {
-                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
-                return;
+        if(!isTerminal(state)) {
+            while (!playOnceRandomly(player)) {
+                player = !player;
+                try {
+                    Thread.sleep(2000);
+                }
+                catch (Exception e){
+                }
             }
-            player = !player;
+            System.out.println(state.isWon() == null ? "Match nul !" : (state.isWon() ? "Player 1 win" : "Player 2 win"));
         }
-        LOGGER.info("Match nul !");
+        System.out.println(state.isWon() == null ? "Match nul !" : (state.isWon() ? "Player 1 win" : "Player 2 win"));
     }
 
     public Pair<Integer, Integer> chooseCellMiniMax() {
@@ -299,26 +298,19 @@ public class Othello extends JPanel implements Game<PositionOthello, Position, P
         LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
         if(!allowedMove(player, column, row)) {
             LOGGER.severe("MiniMax est pourrave, vieux !");
-        }/*
-        try {
-            Thread.sleep(5000);
-        } catch (Exception e) {
-
-        }*/
+        }
         return state.isWon(player, column, row);
     }
 
     public void playMiniMax() {
         boolean player = state.getPlayer();
-        for (Integer k = 0; k < nb_columns * nb_rows; k++) {
-            LOGGER.finer(k + " coups déjà joués.");
-            if (playOnceMiniMax(player)) {
-                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
-                return;
+        if(!isTerminal(state)) {
+            while (!playOnceMiniMax(player)) {
+                player = !player;
             }
-            player = !player;
+            System.out.println(state.isWon() == null ? "Match nul !" : (state.isWon() ? "Player 1 win" : "Player 2 win"));
         }
-        LOGGER.info("Match nul !");
+        System.out.println(state.isWon() == null ? "Match nul !" : (state.isWon() ? "Player 1 win" : "Player 2 win"));
     }
 
     public Pair<Integer, Integer> chooseCellNegaMax() {
@@ -338,15 +330,13 @@ public class Othello extends JPanel implements Game<PositionOthello, Position, P
 
     public void playNegaMax() {
         boolean player = state.getPlayer();
-        for (Integer k = 0; k < nb_columns * nb_rows; k++) {
-            LOGGER.finer(k + " coups déjà joués.");
-            if (playOnceNegaMax(player)) {
-                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
-                return;
+        if(!isTerminal(state)) {
+            while (!playOnceNegaMax(player)) {
+                player = !player;
             }
-            player = !player;
+            System.out.println(state.isWon() == null ? "Match nul !" : (state.isWon() ? "Player 1 win" : "Player 2 win"));
         }
-        LOGGER.info("Match nul !");
+        System.out.println(state.isWon() == null ? "Match nul !" : (state.isWon() ? "Player 1 win" : "Player 2 win"));
     }
 
     public Pair<Integer, Integer> chooseCellAlphaBeta() {
@@ -366,15 +356,17 @@ public class Othello extends JPanel implements Game<PositionOthello, Position, P
 
     public void playAlphaBeta() {
         boolean player = state.getPlayer();
-        for (Integer k = 0; k < nb_columns * nb_rows; k++) {
-            LOGGER.finer(k + " coups déjà joués.");
-            if (playOnceAlphaBeta(player)) {
-                LOGGER.info("Player " + (player ? 1 : 2) + " won !");
-                return;
+        if(!isTerminal(state)) {
+            while (!playOnceAlphaBeta(player)) {
+                player = !player;
             }
-            player = !player;
+            System.out.println(state.isWon() == null ? "Match nul !" : (state.isWon() ? "Player 1 win" : "Player 2 win"));
         }
-        LOGGER.info("Match nul !");
+        System.out.println(state.isWon() == null ? "Match nul !" : (state.isWon() ? "Player 1 win" : "Player 2 win"));
+    }
+
+    public void setPlayer(boolean player) {
+        state.setPlayer(player);
     }
 
 }
