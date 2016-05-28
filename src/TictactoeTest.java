@@ -148,4 +148,202 @@ public class TictactoeTest {
         p.playRandomly();
         //Thread.sleep(10000);
     }
+
+    @Test
+    public void testChangeLeft() {
+        Boolean[][] p = new Boolean[3][1];
+        p[1][0] = false;
+        p[0][0] = true;
+        p[2][0] = true;
+        PositionOthello po = new PositionOthello(p);
+        assertTrue(po.changeLeft(true, 2, 0));
+        Boolean[][] test = new Boolean[3][1];
+        test[0][0] = true;
+        test[1][0] = true;
+        test[2][0] = true;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChangeLeft2() {
+        Boolean[][] p = new Boolean[3][1];
+        p[1][0] = true;
+        p[0][0] = false;
+        p[2][0] = false;
+        PositionOthello po = new PositionOthello(p);
+        assertTrue(po.changeLeft(false, 2, 0));
+        Boolean[][] test = new Boolean[3][1];
+        test[0][0] = false;
+        test[1][0] = false;
+        test[2][0] = false;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChangeLeft3() {
+        Boolean[][] p = new Boolean[3][1];
+        p[1][0] = false;
+        p[0][0] = true;
+        p[2][0] = false;
+        PositionOthello po = new PositionOthello(p);
+        assertFalse(po.changeLeft(false, 2, 0));
+        Boolean[][] test = new Boolean[3][1];
+        test[0][0] = true;
+        test[1][0] = false;
+        test[2][0] = false;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChangeLeft4() {
+        Boolean[][] p = new Boolean[3][1];
+        p[1][0] = true;
+        p[0][0] = false;
+        p[2][0] = true;
+        PositionOthello po = new PositionOthello(p);
+        assertFalse(po.changeLeft(true, 2, 0));
+        Boolean[][] test = new Boolean[3][1];
+        test[0][0] = false;
+        test[1][0] = true;
+        test[2][0] = true;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testOthelloMove() {
+        Othello o = new Othello(1, 3);
+        o.setCell(0,0,true);
+        o.setCell(1,0,false);
+        assertTrue(o.getCell(0, 0));
+        assertFalse(o.getCell(1,0));
+        o.move(true, 2, 0);
+        Boolean[][] test = new Boolean[3][1];
+        test[0][0] = true;
+        test[1][0] = true;
+        test[2][0] = true;
+        //assertTrue(o.getState()[1][0]);
+        assertArrayEquals(o.getState(), test);
+    }
+
+    @Test
+    public void testChangeRight() {
+        Boolean[][] p = new Boolean[3][1];
+        p[1][0] = false;
+        p[0][0] = true;
+        p[2][0] = true;
+        PositionOthello po = new PositionOthello(p);
+        assertTrue(po.changeRight(true, 0, 0));
+        Boolean[][] test = new Boolean[3][1];
+        test[0][0] = true;
+        test[1][0] = true;
+        test[2][0] = true;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChangeRight2() {
+        Boolean[][] p = new Boolean[3][1];
+        p[1][0] = true;
+        p[0][0] = false;
+        p[2][0] = false;
+        PositionOthello po = new PositionOthello(p);
+        assertTrue(po.changeRight(false, 0, 0));
+        Boolean[][] test = new Boolean[3][1];
+        test[0][0] = false;
+        test[1][0] = false;
+        test[2][0] = false;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChangeUp() {
+        Boolean[][] p = new Boolean[1][3];
+        p[0][0] = true;
+        p[0][1] = false;
+        p[0][2] = true;
+        PositionOthello po = new PositionOthello(p);
+        assertTrue(po.changeUp(true, 0, 2));
+        Boolean[][] test = new Boolean[1][3];
+        test[0][0] = true;
+        test[0][1] = true;
+        test[0][2] = true;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChangeUp2() {
+        Boolean[][] p = new Boolean[1][3];
+        p[0][0] = false;
+        p[0][1] = true;
+        p[0][2] = false;
+        PositionOthello po = new PositionOthello(p);
+        assertTrue(po.changeUp(false, 0, 2));
+        Boolean[][] test = new Boolean[1][3];
+        test[0][0] = false;
+        test[0][1] = false;
+        test[0][2] = false;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChangeDown() {
+        Boolean[][] p = new Boolean[1][3];
+        p[0][0] = true;
+        p[0][1] = false;
+        p[0][2] = true;
+        PositionOthello po = new PositionOthello(p);
+        assertTrue(po.changeDown(true, 0, 0));
+        Boolean[][] test = new Boolean[1][3];
+        test[0][0] = true;
+        test[0][1] = true;
+        test[0][2] = true;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChangeDown2() {
+        Boolean[][] p = new Boolean[1][3];
+        p[0][0] = false;
+        p[0][1] = true;
+        p[0][2] = false;
+        PositionOthello po = new PositionOthello(p);
+        assertTrue(po.changeDown(false, 0, 0));
+        Boolean[][] test = new Boolean[1][3];
+        test[0][0] = false;
+        test[0][1] = false;
+        test[0][2] = false;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChange() {
+        Boolean[][] p = new Boolean[1][3];
+        p[0][0] = false;
+        p[0][1] = false;
+        p[0][2] = true;
+        PositionOthello po = new PositionOthello(p);
+        assertFalse(po.change(false, 0, 0));
+        Boolean[][] test = new Boolean[1][3];
+        test[0][0] = false;
+        test[0][1] = false;
+        test[0][2] = true;
+        assertArrayEquals(po.getState(), test);
+    }
+
+    @Test
+    public void testChange2() {
+        Boolean[][] p = new Boolean[1][3];
+        p[0][0] = false;
+        p[0][1] = true;
+        p[0][2] = true;
+        PositionOthello po = new PositionOthello(p);
+        assertFalse(po.change(true, 0, 2));
+        Boolean[][] test = new Boolean[1][3];
+        test[0][0] = false;
+        test[0][1] = true;
+        test[0][2] = true;
+        assertArrayEquals(po.getState(), test);
+    }
+
+
 }
