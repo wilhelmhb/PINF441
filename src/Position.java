@@ -21,6 +21,8 @@ public abstract class Position<Action> implements PositionInterface<Action> {
         return player;
     }
 
+    public void setPlayer(boolean player) { this.player = player;}
+
     public Boolean[][] getState() {
         return state;
     }

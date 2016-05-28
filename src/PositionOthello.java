@@ -29,18 +29,31 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
      * @return true if thanks to a move in cell (column, row), player won thanks to a row
      */
     public boolean changeLeft(boolean player, Integer column, Integer row) {
+        //System.out.println("changeleft begin");
         Integer column_left = column - 1;
-        System.out.println("ChangeLeft : " + column + ";" + column_left + ";" + row);
         while((column_left >= 0)&&(getCell(column_left, row) != null)&&(getCell(column_left, row) != player)) {
             column_left--;
         }
+        /*System.out.println("Player : " + player);
+        System.out.println("Left cell : " + column_left);
+        System.out.println("Left cell is in grid : " + (column_left >= 0));
+        /*System.out.println("Left cell is not null : " + (getCell(column_left, row) != null));
+        System.out.println("Reached an other player's cell : " + (getCell(column_left, row) == player));*/
         if((column_left >= 0)&&(getCell(column_left, row) != null)&&(getCell(column_left, row) == player)) {
             for(int i = column_left ; i < column; i++) {
                 setCell(i, row, player);
             }
-            return (column != (column_left - 1));
+            /*System.out.println("Column : " + column);
+            System.out.println("Left column : " + column_left);*/
+            return (column != (column_left + 1));
         }
         return false;
+    }
+
+    @Override
+    public boolean setCell(Integer column, Integer row, Boolean player) {
+        state[column][row] = player;
+        return true;
     }
 
     public boolean changeRight(boolean player, Integer column, Integer row) {
@@ -220,12 +233,18 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
         for(int column = 0 ; column < state.length ; column++) {
             for(int row = 0 ; row < state[0].length ; row++) {
                 if(this.getCell(column, row) == null) {
+                    //System.out.println("Considered cell : (" + column + "," + row + "), because " + getCell(column, row));
                     int column_left = column - 1;
                     int column_right = column + 1;
                     int row_up = row - 1;
                     int row_down = row + 1;
-                    System.out.println(row + ";" + column + ";" + row_up + ";" + row_down + ";" + column_left + ";" + column_right);
-                    if (
+                    //System.out.println(row + ";" + column + ";" + row_up + ";" + row_down + ";" + column_left + ";" + column_right);
+                    /*System.out.println("Player : " + player);
+                    System.out.println("Left cell still in grid : " + (column_left >= 0));
+                    System.out.println("Left cell not empty: " + (getCell(column_left, row) != null));
+                    System.out.println("May change left cell : " + (getCell(column_left, row) != player));
+                    System.out.println("Not isolated : " + ((column_left >= 0) && (getCell(column_left, row) != null) && (getCell(column_left, row) != player)));
+                    */if (
                         (
                             (row_up >= 0) &&
                             (getCell(column, row_up) != null) &&
@@ -283,6 +302,8 @@ public class PositionOthello extends Position<Pair<Integer, Integer>> {
 
     @Override
     public boolean isTerminal() {
+        /*System.out.println("isFull : " + isFull());
+        System.out.println("Actions : " + getActions());*/
         return isFull() || (getActions().size() == 0);
     }
 }

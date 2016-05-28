@@ -160,6 +160,7 @@ public class Othello extends JPanel implements Game<PositionOthello, Position, P
      * @param row
      */
     public void move(boolean player, Integer column, Integer row) {
+        //System.out.println("move begin");
         this.state = (PositionOthello) this.getResult(state, new Tuple<>(column, row));
         for(int i = 0; i < state.getState().length;i++) {
             for(int j = 0; j < state.getState()[0].length ; j++) {
@@ -168,6 +169,7 @@ public class Othello extends JPanel implements Game<PositionOthello, Position, P
                 }
             }
         }
+        //System.out.println("move end");
     }
 
     /**
@@ -215,58 +217,12 @@ public class Othello extends JPanel implements Game<PositionOthello, Position, P
 
     @Override
     public List<Pair<Integer, Integer>> getActions(PositionOthello position) {
-        boolean player = this.getPlayer(position);
-        LinkedList l = new LinkedList();
-        System.out.println(position.getActions().toString());
-        for(Pair<Integer, Integer> p : position.getActions()) {
-            int row = p.getSecond();
-            int column = p.getFirst();
-            int column_left = column - 1;
-            int column_right = column = 1;
-            int row_up = row - 1;
-            int row_down = row + 1;
-            System.out.println(row + ";" + column + ";" + row_up + ";" + row_down + ";" + column_left + ";" + column_right);
-            if(
-                ((row_up >= 0)
-                    &&(position.getCell(column, row_up) != null)
-                    &&(position.getCell(column, row_up) != player))
-                ||((row_down < state.getState()[0].length)
-                    &&(position.getCell(column, row_down) != null)
-                    &&(position.getCell(column, row_down) != player)) //vertically
-                ||((column_left >= 0)&&
-                    (position.getCell(column_left, row) != null)&&
-                    (position.getCell(column_left, row) != player))
-                ||((column_right < state.getState().length)&&
-                    (position.getCell(column_right, row) != null)&&
-                    (position.getCell(column_right, row) != player)) //horizontally
-                ||((column_right < state.getState().length)&&
-                    (row_down < state.getState()[0].length)&&
-                    (position.getCell(column_right, row_down) != null)&&
-                    (position.getCell(column_right, row_down) != player))
-                ||((column_left >= 0)&&
-                        (row_up >= 0)&&
-                        (position.getCell(column_left, row_up) != null)&&
-                        (position.getCell(column_left, row_up) != player)) //second_diag
-                ||((column_left >= 0)&&
-                        (row_down < state.getState()[0].length)&&
-                        (position.getCell(column_left, row_down) != null)&&
-                        (position.getCell(column_left, row_down) != player))
-                ||((row_up >= 0)&&
-                        (column_right < state.getState().length)&&
-                        (position.getCell(column_right, row_up) != null)&&
-                        (position.getCell(column_right, row_up) != player))//first_diag
-                ) {
-                PositionOthello po = new PositionOthello(position.cloneState());
-                if (po.change(player, column, row)) {
-                    l.add(p);
-                }
-            }
-        }
-        return l;
+        return position.getActions();
     }
 
     @Override
     public Position getResult(Position state, Pair<Integer, Integer> action) {
+        //System.out.println("getResultOthello begin");
         return this.state.getResult(state, action);
     }
 
@@ -310,7 +266,7 @@ public class Othello extends JPanel implements Game<PositionOthello, Position, P
         Integer row = cell.getSecond();
         LOGGER.finest("selected column : "+ column + " and selected row : "+ row);
         if(!allowedMove(player, column, row)) {
-            LOGGER.severe("MiniMax est pourrave, vieux !");
+            LOGGER.severe("L'algo est pourrave, vieux !");
         }/*
         try {
             Thread.sleep(5000);
